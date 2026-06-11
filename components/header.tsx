@@ -10,18 +10,12 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [insuranceModalOpen, setInsuranceModalOpen] = useState(false)
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    if (href === '#pet-insurance') {
-      e.preventDefault()
-      setInsuranceModalOpen(true)
-      setMobileMenuOpen(false)
-    } else {
-      setMobileMenuOpen(false)
-    }
+  const handleNavClick = () => {
+    setMobileMenuOpen(false)
   }
 
   const navigation = [
-    { name: 'Pet Insurance', href: '#pet-insurance' },
+    { name: 'Pet Insurance', href: '/providers' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'How It Works', href: '#how-it-works' },
     { name: 'Learn More', href: '#learn-more' },
@@ -47,14 +41,14 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-10">
               {navigation.map((item) => (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
+                  onClick={handleNavClick}
                   className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
             </nav>
 
@@ -80,14 +74,14 @@ export function Header() {
             <div className="md:hidden py-4 border-t border-zinc-100 dark:border-zinc-800">
               <nav className="flex flex-col gap-4">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
+                    onClick={handleNavClick}
                     className="text-base font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 <button
                   onClick={() => {

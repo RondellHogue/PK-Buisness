@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null)
   const [isAddingNew, setIsAddingNew] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [rowUploadingId, setRowUploadingId] = useState<string | null>(null)
   const [saveStatus, setSaveStatus] = useState<string | null>(null)
   
   const supabase = createClient()
@@ -114,6 +115,32 @@ export default function AdminDashboard() {
       if (data.url) setEditingProvider({ ...editingProvider, logo_url: data.url })
     } catch (err) { console.error('Upload failed:', err) }
     setUploadingLogo(false)
+  }
+
+  async function handleInlineLogoUpload(e: React.ChangeEvent<HTMLInputElement>, providerId: string) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setRowUploadingId(providerId)
+    setSaveStatus('Uploading logo...')
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.url) {
+        await supabase.from('insurance_providers').update({ logo_url: data.url }).eq('id', providerId)
+        setProviders((prev) => prev.map((p) => (p.id === providerId ? { ...p, logo_url: data.url } : p)))
+        setSaveStatus('Logo saved!')
+      } else {
+        setSaveStatus('Upload failed')
+      }
+    } catch (err) {
+      console.error('Upload failed:', err)
+      setSaveStatus('Upload failed')
+    }
+    setRowUploadingId(null)
+    setTimeout(() => setSaveStatus(null), 2000)
+    e.target.value = ''
   }
 
   async function saveProvider() {
@@ -186,7 +213,10 @@ export default function AdminDashboard() {
         {activeTab === 'providers' && (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold">Manage Insurance Providers</h2>
+              <div>
+                <h2 className="text-lg font-semibold">Manage Insurance Providers</h2>
+                <p className="text-sm text-gray-500">Import a logo from your computer on any provider below. It saves and publishes to the live site instantly.</p>
+              </div>
               <button onClick={() => { setEditingProvider({ id: 'new', ...emptyProvider }); setIsAddingNew(true) }}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700">
                 <Plus className="w-4 h-4" /> Add Provider
@@ -208,6 +238,11 @@ export default function AdminDashboard() {
                         <div className="text-sm text-gray-500">{p.monthly_cost}/mo | {p.coverage_limit} limit</div>
                       </div>
                       <span className={`px-2 py-1 text-xs rounded ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{p.is_active ? 'Active' : 'Inactive'}</span>
+                      <label className="cursor-pointer p-2 text-gray-600 hover:bg-gray-100 rounded flex items-center gap-1 text-sm" title="Import logo from your computer">
+                        <Upload className="w-4 h-4" />
+                        {rowUploadingId === p.id ? 'Uploading...' : 'Logo'}
+                        <input type="file" accept="image/*" onChange={(e) => handleInlineLogoUpload(e, p.id)} className="hidden" disabled={rowUploadingId === p.id} />
+                      </label>
                       <button onClick={() => setEditingProvider(p)} className="p-2 text-gray-600 hover:bg-gray-100 rounded"><Edit2 className="w-4 h-4" /></button>
                       <button onClick={() => deleteProvider(p.id)} className="p-2 text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
                     </div>

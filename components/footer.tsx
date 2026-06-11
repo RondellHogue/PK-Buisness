@@ -3,6 +3,7 @@ import Image from 'next/image'
 
 const footerLinks = {
   resources: [
+    { name: 'Insurance Providers', href: '/providers' },
     { name: 'Pet Insurance Guide', href: '/#learn-more' },
     { name: 'Pricing', href: '/#pricing' },
     { name: 'FAQ', href: '/faq' },
