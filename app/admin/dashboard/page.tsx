@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Plus, Trash2, Edit2, Save, X, Upload, ExternalLink, GripVertical, LogOut, Palette, Type, Layout, Eye } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, Upload, ExternalLink, GripVertical, LogOut, Palette, Type, Layout, Eye, Mail, MailOpen } from 'lucide-react'
 import Link from 'next/link'
 
 interface Provider {
@@ -28,11 +28,22 @@ interface SiteSettings {
   header?: { logoSize: string; navItems: string[] }
 }
 
+interface ContactMessage {
+  id: string
+  from_email: string
+  subject: string
+  body: string
+  is_read: boolean
+  created_at: string
+}
+
 export default function AdminDashboard() {
   const [providers, setProviders] = useState<Provider[]>([])
   const [settings, setSettings] = useState<SiteSettings>({})
+  const [messages, setMessages] = useState<ContactMessage[]>([])
+  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'providers' | 'content' | 'colors'>('providers')
+  const [activeTab, setActiveTab] = useState<'providers' | 'content' | 'colors' | 'messages'>('providers')
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null)
   const [isAddingNew, setIsAddingNew] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
@@ -70,7 +81,25 @@ export default function AdminDashboard() {
       settingsData.forEach((s: any) => { obj[s.setting_key] = s.setting_value })
       setSettings(obj)
     }
+
+    const { data: messageData } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false })
+    if (messageData) setMessages(messageData)
     setLoading(false)
+  }
+
+  async function openMessage(msg: ContactMessage) {
+    setSelectedMessage(msg)
+    if (!msg.is_read) {
+      await supabase.from('contact_messages').update({ is_read: true }).eq('id', msg.id)
+      setMessages((prev) => prev.map((m) => (m.id === msg.id ? { ...m, is_read: true } : m)))
+    }
+  }
+
+  async function deleteMessage(id: string) {
+    if (!confirm('Delete this message?')) return
+    await supabase.from('contact_messages').delete().eq('id', id)
+    setMessages((prev) => prev.filter((m) => m.id !== id))
+    if (selectedMessage?.id === id) setSelectedMessage(null)
   }
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -141,10 +170,13 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex gap-2 border-b">
-          {(['providers', 'content', 'colors'] as const).map(tab => (
+          {(['providers', 'content', 'colors', 'messages'] as const).map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 font-medium capitalize ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}>
+              className={`px-4 py-2 font-medium capitalize flex items-center gap-2 ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}>
               {tab === 'providers' ? 'Insurance Providers' : tab}
+              {tab === 'messages' && messages.filter(m => !m.is_read).length > 0 && (
+                <span className="bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">{messages.filter(m => !m.is_read).length}</span>
+              )}
             </button>
           ))}
         </div>
@@ -230,7 +262,53 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        {activeTab === 'messages' && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Contact Messages</h2>
+            <div className="bg-white rounded-lg shadow">
+              {messages.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">No messages yet.</div>
+              ) : (
+                <div className="divide-y">
+                  {messages.map(m => (
+                    <div key={m.id} className={`p-4 flex items-center gap-4 ${m.is_read ? '' : 'bg-blue-50/60'}`}>
+                      {m.is_read ? <MailOpen className="w-5 h-5 text-gray-400 shrink-0" /> : <Mail className="w-5 h-5 text-blue-600 shrink-0" />}
+                      <button onClick={() => openMessage(m)} className="flex-1 text-left min-w-0">
+                        <div className={`truncate ${m.is_read ? 'font-medium text-gray-700' : 'font-semibold text-gray-900'}`}>{m.subject}</div>
+                        <div className="text-sm text-gray-500 truncate">{m.from_email} · {new Date(m.created_at).toLocaleString()}</div>
+                      </button>
+                      <button onClick={() => deleteMessage(m.id)} className="p-2 text-red-600 hover:bg-red-50 rounded shrink-0"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+
+      {selectedMessage && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h3 className="text-lg font-semibold pr-4">{selectedMessage.subject}</h3>
+              <button onClick={() => setSelectedMessage(null)}><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+                <div><span className="text-gray-500">From: </span><span className="font-medium text-gray-900">{selectedMessage.from_email}</span></div>
+                <div><span className="text-gray-500">Received: </span><span className="text-gray-900">{new Date(selectedMessage.created_at).toLocaleString()}</span></div>
+              </div>
+              <div className="border-t pt-4 whitespace-pre-wrap text-gray-700 leading-relaxed">{selectedMessage.body}</div>
+            </div>
+            <div className="p-6 border-t flex justify-between">
+              <button onClick={() => deleteMessage(selectedMessage.id)} className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2"><Trash2 className="w-4 h-4" /> Delete</button>
+              <a href={`mailto:${selectedMessage.from_email}?subject=Re: ${encodeURIComponent(selectedMessage.subject)}`} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"><Mail className="w-4 h-4" /> Reply</a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editingProvider && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

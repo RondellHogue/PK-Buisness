@@ -3,18 +3,18 @@ import Image from 'next/image'
 
 const footerLinks = {
   resources: [
-    { name: 'Pet Insurance Guide', href: '#learn-more' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'FAQ', href: '#' },
+    { name: 'Pet Insurance Guide', href: '/#learn-more' },
+    { name: 'Pricing', href: '/#pricing' },
+    { name: 'FAQ', href: '/faq' },
   ],
   company: [
-    { name: 'About', href: '#' },
-    { name: 'Contact', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+    { name: 'Blog', href: '/blog' },
   ],
   legal: [
-    { name: 'Privacy', href: '#' },
-    { name: 'Terms', href: '#' },
+    { name: 'Privacy', href: '/privacy' },
+    { name: 'Terms', href: '/terms' },
   ],
 }
 
