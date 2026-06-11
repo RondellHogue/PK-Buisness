@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>github-slideshow (preview)</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/moon.css" id="theme" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css" />
+
+    <style>
+      .preview-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-align: center;
+        padding: 6px 12px;
+        background: rgba(0, 0, 0, 0.55);
+        color: #fdf6e3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-banner">
+      Static preview of the Jekyll + reveal.js deck — use the arrow keys or on-screen controls to navigate
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <!-- intro (_posts/0000-01-01-intro.md) -->
+        <section class="slide">
+          <h1>Welcome to our slide deck!</h1>
+          <p>Use the right arrow to begin!</p>
+        </section>
+
+        <section class="slide">
+          <h1>github-slideshow</h1>
+          <p>A fun activity for learning Git and GitHub.</p>
+          <p><small>by GitHubTeacher</small></p>
+        </section>
+
+        <section class="slide">
+          <h1>How it works</h1>
+          <p>Each slide is a Markdown file in <code>_posts/</code>.</p>
+          <p>Jekyll + reveal.js turn them into this presentation.</p>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: true,
+        transition: "linear",
+        width: 1000,
+        height: 920,
+        margin: 0.1,
+        minScale: 0.2,
+        maxScale: 1.5,
+        plugins: [RevealHighlight],
+      });
+    </script>
+  </body>
+</html>
