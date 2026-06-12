@@ -6,10 +6,10 @@ import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleNavClick = () => {
-    setMobileMenuOpen(false)
+    setMenuOpen(false)
   }
 
   const navigation = [
@@ -17,76 +17,64 @@ export function Header() {
     { name: 'Pricing', href: '#pricing' },
     { name: 'Blog', href: '/blog' },
     { name: 'Learn More', href: '#learn-more' },
+    { name: 'FAQ', href: '/faq' },
   ]
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/10 shadow-sm shadow-black/5">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/images/logo-cropped.png"
-              alt="Pet Keepings"
-              width={180}
-              height={45}
-              className="w-[180px] h-auto dark:invert"
-              priority
-            />
-          </Link>
+        <div className="grid grid-cols-3 items-center h-20">
+          {/* Hamburger Menu (left) */}
+          <div className="flex justify-start">
+            <button
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+              className="inline-flex items-center justify-center p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-10">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={handleNavClick}
-                className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          {/* Logo (center) */}
+          <div className="flex justify-center">
+            <Link href="/" className="flex items-center" onClick={handleNavClick}>
+              <Image
+                src="/images/logo-cropped.png"
+                alt="Pet Keepings"
+                width={180}
+                height={45}
+                className="w-[180px] h-auto dark:invert"
+                priority
+              />
+            </Link>
+          </div>
 
-          {/* CTA Button */}
-          <Link
-            href="/contact"
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
-          >
-            Contact Us
-          </Link>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* CTA Button (right) */}
+          <div className="flex justify-end">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-zinc-100 dark:border-zinc-800">
-            <nav className="flex flex-col gap-4">
+        {/* Dropdown Menu */}
+        {menuOpen && (
+          <div className="-mx-6 px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl backdrop-saturate-150">
+            <nav className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={handleNavClick}
-                  className="text-base font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                  className="rounded-lg px-3 py-2.5 text-base font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
                 >
                   {item.name}
                 </Link>
               ))}
-              <Link
-                href="/contact"
-                onClick={handleNavClick}
-                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 mt-2"
-              >
-                Contact Us
-              </Link>
             </nav>
           </div>
         )}
