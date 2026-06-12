@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Dog, Cat, Bird, Rabbit, Fish, Turtle, PawPrint, Bone } from 'lucide-react'
 
@@ -48,8 +48,9 @@ function buildPattern(): Deco[] {
     const delay = rand() * 6
     const duration = 7 + rand() * 7
     const drift = 14 + rand() * 22
-    // Taper opacity: brighter near the top, fading as it descends
-    const baseOpacity = Math.max(0.1, 0.45 * (1 - top / 110))
+    // Each icon keeps a strong, consistent royal-blue presence; the gradual
+    // fade down the page is applied globally based on scroll position.
+    const baseOpacity = 0.7
     const rotate = -22 + rand() * 44
     items.push({ id: i, side, top, offset, size, Icon, delay, duration, drift, baseOpacity, rotate })
   }
@@ -58,11 +59,30 @@ function buildPattern(): Deco[] {
 
 export function PetIconPattern() {
   const items = useMemo(buildPattern, [])
+  const [scrollFade, setScrollFade] = useState(1)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const docScroll = document.documentElement.scrollHeight - window.innerHeight
+      const ratio = docScroll > 0 ? window.scrollY / docScroll : 0
+      // Darker (1) at the top, gradually more transparent lower down, but never
+      // fully gone — floors at 0.25 so the icons always stay visible.
+      setScrollFade(Math.max(0.25, 1 - ratio * 0.85))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
 
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden lg:block"
+      style={{ opacity: scrollFade, transition: 'opacity 0.2s linear' }}
     >
       {items.map((it) => {
         const Icon = it.Icon

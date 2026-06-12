@@ -84,9 +84,9 @@ export function PawTrail() {
       const dogCenterDocY = dogRect.top + scrollY + dogRect.height / 2
       const dogBottomDocY = dogRect.bottom + scrollY
 
-      // Trail begins just BELOW the dog image (so no print lands on the photo)
-      // and continues all the way down to the bottom of the page.
-      const startPlaceY = dogBottomDocY + 60
+      // Trail begins well BELOW the dog image (so no print lands on the photo
+      // and there's clear breathing room) and continues to the bottom of the page.
+      const startPlaceY = dogBottomDocY + 220
       const endPlaceY = docHeight - 120
 
       // Scroll range during which the trail is revealed
