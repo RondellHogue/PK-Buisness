@@ -28,10 +28,10 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 md:py-28 bg-blue-600/90 dark:bg-blue-700/90">
+    <section className="pt-8 pb-20 md:pt-10 md:pb-28 bg-blue-600/90 dark:bg-blue-700/90">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
