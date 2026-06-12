@@ -108,11 +108,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
       setPhraseIndex((i) => (i + 1) % punnyPhrases.length)
     }, 1000)
     timers.current.push(interval as unknown as ReturnType<typeof setTimeout>)
-    // Total load time: 3 seconds
+    // Total load time: 4 seconds
     const done = setTimeout(() => {
       clearInterval(interval)
       setLoading(false)
-    }, 3000)
+    }, 4000)
     timers.current.push(done)
   }
 
