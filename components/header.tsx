@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/10 shadow-sm shadow-black/5">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-3 items-center h-20">
           {/* Hamburger Menu (left) */}
           <div className="flex justify-start">
@@ -56,7 +56,7 @@ export function Header() {
                 alt="Pet Keepings"
                 width={681}
                 height={168}
-                className="h-9 w-auto dark:invert"
+                className="h-7 sm:h-8 w-auto dark:invert"
                 priority
               />
             </Link>
@@ -66,7 +66,7 @@ export function Header() {
           <div className="flex justify-end">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
             >
               Contact Us
             </Link>
