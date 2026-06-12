@@ -30,9 +30,9 @@ export function Footer() {
               <Image
                 src="/images/logo-cropped.png"
                 alt="Pet Keepings"
-                width={160}
-                height={40}
-                className="h-10 w-auto dark:invert"
+                width={256}
+                height={256}
+                className="h-40 w-auto dark:invert"
               />
             </Link>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-xs">
