@@ -28,7 +28,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="pt-8 pb-20 md:pt-10 md:pb-28 bg-blue-600/90 dark:bg-blue-700/90">
+    <section className="pt-8 pb-20 md:pt-10 md:pb-28 bg-blue-700/90 dark:bg-blue-800/90">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
