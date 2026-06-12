@@ -44,7 +44,7 @@ export function Header() {
                 alt="Pet Keepings"
                 width={681}
                 height={168}
-                className="h-11 w-auto dark:invert"
+                className="h-9 w-auto dark:invert"
                 priority
               />
             </Link>
