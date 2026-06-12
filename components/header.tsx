@@ -40,11 +40,11 @@ export function Header() {
           <div className="flex justify-center">
             <Link href="/" className="flex items-center" onClick={handleNavClick}>
               <Image
-                src="/images/logo-cropped.png"
+                src="/images/logo-trimmed.png"
                 alt="Pet Keepings"
-                width={56}
-                height={56}
-                className="h-14 w-auto dark:invert"
+                width={681}
+                height={168}
+                className="h-11 w-auto dark:invert"
                 priority
               />
             </Link>
