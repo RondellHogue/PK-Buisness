@@ -42,7 +42,10 @@ function buildPattern(): Deco[] {
     // so icons are dense up top and sparse toward the bottom.
     const top = Math.pow(rand(), 1.9) * 98
     const side: 'left' | 'right' = i % 2 === 0 ? 'left' : 'right'
-    const offset = 0.5 + rand() * 5.5 // % in from the screen edge
+    // Icons near the very top spread further inward to fill the white void
+    // beside the headline; lower icons stay tucked against the edges.
+    const maxInset = top < 24 ? 22 : 6
+    const offset = 0.5 + rand() * maxInset // % in from the screen edge
     const size = 14 + Math.floor(rand() * 18)
     const Icon = ICONS[Math.floor(rand() * ICONS.length)]
     const delay = rand() * 6

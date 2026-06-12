@@ -22,7 +22,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 md:py-28 bg-white dark:bg-zinc-900">
+    <section id="how-it-works" className="py-20 md:py-28 bg-gradient-to-b from-blue-600/90 via-blue-200/60 to-white dark:from-blue-700/90 dark:via-zinc-800 dark:to-zinc-900">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -30,7 +30,7 @@ export function HowItWorks() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-3"
+            className="text-sm font-medium text-blue-100 mb-3"
           >
             How It Works
           </motion.p>
@@ -39,7 +39,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-white"
+            className="text-3xl md:text-4xl font-semibold text-white"
           >
             Get covered in 3 simple steps
           </motion.h2>

@@ -11,14 +11,15 @@ export function HeroSection() {
   const [quoterOpen, setQuoterOpen] = useState(false)
 
   return (
-    <section className="pt-32 pb-8 md:pt-40 md:pb-12 bg-gradient-to-b from-blue-50/50 to-white dark:from-zinc-800 dark:to-zinc-900">
-      <div className="max-w-4xl mx-auto px-6 text-center">
+    <section className="relative pt-32 md:pt-40 bg-transparent">
+      {/* Top white area with headline, subtext and CTAs */}
+      <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-12">
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1] text-balance"
+          className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1] text-balance"
         >
           One <span className="text-blue-600 dark:text-blue-400">Emergency Visit</span> Could Cost{' '}
           <span className="text-blue-600 dark:text-blue-400">Thousands</span>
@@ -55,6 +56,21 @@ export function HeroSection() {
             View Providers
           </Link>
         </motion.div>
+      </div>
+
+      {/* Blue lower panel: begins just above the dog. The white "cap" has a
+          gently upward-arching curved bottom edge and a soft downward shadow,
+          making the white area above look like a slightly raised tab. */}
+      <div className="relative bg-blue-600/90 dark:bg-blue-700/90 backdrop-blur-xl pt-20 md:pt-28 pb-16">
+        <svg
+          viewBox="0 0 1440 90"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="absolute top-0 left-0 w-full h-[60px] md:h-[90px] text-white dark:text-zinc-900"
+          style={{ filter: 'drop-shadow(0 6px 6px rgba(0,0,0,0.15))' }}
+        >
+          <path d="M0,0 L1440,0 L1440,72 C960,-12 480,-12 0,72 Z" fill="currentColor" />
+        </svg>
 
         {/* Dog Image Looking Up */}
         <motion.div
@@ -62,7 +78,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
-          className="mt-12 flex justify-center"
+          className="relative flex justify-center"
         >
           <Image
             src="/images/dog-looking-up.png?v=2"
@@ -74,15 +90,15 @@ export function HeroSection() {
           />
         </motion.div>
 
-        {/* Badge - Now below the dog */}
+        {/* Badge - below the dog */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-6"
+          className="relative mt-6 flex justify-center"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-100 dark:border-blue-800">
-            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
             Trusted by 10,000+ Pet Owners
           </span>
         </motion.div>

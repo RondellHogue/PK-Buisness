@@ -28,7 +28,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 md:py-28 bg-white dark:bg-zinc-900">
+    <section className="py-20 md:py-28 bg-blue-600/90 dark:bg-blue-700/90">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -36,7 +36,7 @@ export function FeaturesSection() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-3"
+            className="text-sm font-medium text-blue-100 mb-3"
           >
             Why Pet Insurance
           </motion.p>
@@ -45,7 +45,7 @@ export function FeaturesSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-white"
+            className="text-3xl md:text-4xl font-semibold text-white"
           >
             Peace of mind for pet parents
           </motion.h2>
@@ -62,13 +62,13 @@ export function FeaturesSection() {
               transition={{ delay: index * 0.1 }}
               className="text-center"
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-5">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/15 text-white mb-5">
                 <feature.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-white mb-2">
                 {feature.title}
               </h3>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              <p className="text-sm text-blue-100/90 leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>

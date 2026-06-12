@@ -22,7 +22,7 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="py-24 bg-white dark:bg-zinc-900">
+    <section id="pricing" className="py-24 bg-blue-600/90 dark:bg-blue-700/90">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -30,11 +30,11 @@ export function PricingSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wide uppercase">Pricing</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mt-3 mb-4">
+          <span className="text-sm font-medium text-blue-100 tracking-wide uppercase">Pricing</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
             Understanding Pet Care Costs
           </h2>
-          <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
             See how much common treatments cost and how affordable insurance can be
           </p>
         </motion.div>
@@ -45,7 +45,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-zinc-50 dark:bg-zinc-800 rounded-2xl p-8"
+            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-xl shadow-blue-900/10"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Common Treatment Costs</h3>
             <div className="space-y-5">
@@ -77,7 +77,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-zinc-50 dark:bg-zinc-800 rounded-2xl p-8"
+            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-xl shadow-blue-900/10"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Average Insurance Costs</h3>
             <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
