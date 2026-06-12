@@ -1,10 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { PetInsuranceModal } from './pet-insurance-modal'
 
 export function HeroSection() {
+  const [quoterOpen, setQuoterOpen] = useState(false)
+
   return (
     <section className="pt-32 pb-8 md:pt-40 md:pb-12 bg-gradient-to-b from-blue-50/50 to-white dark:from-zinc-800 dark:to-zinc-900">
       <div className="max-w-4xl mx-auto px-6 text-center">
@@ -13,10 +18,10 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1]"
+          className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1] text-balance"
         >
-          Pet insurance,{' '}
-          <span className="text-blue-600 dark:text-blue-400">simplified</span>
+          One <span className="text-blue-600 dark:text-blue-400">Emergency Visit</span> Could Cost{' '}
+          <span className="text-blue-600 dark:text-blue-400">Thousands</span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -24,9 +29,9 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
-          Compare top providers, understand your options, and find the right coverage for your furry family member.
+          Understand your options, and find the right coverage for your furry family member.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -36,19 +41,19 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <a
-            href="/get-started"
+          <button
+            onClick={() => setQuoterOpen(true)}
             className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
           >
-            Start Now
+            Start Saving
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </a>
-          <a
-            href="#how-it-works"
+          </button>
+          <Link
+            href="/providers"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
-            How it works
-          </a>
+            View Providers
+          </Link>
         </motion.div>
 
         {/* Dog Image Looking Up */}
@@ -81,6 +86,8 @@ export function HeroSection() {
           </span>
         </motion.div>
       </div>
+
+      <PetInsuranceModal isOpen={quoterOpen} onClose={() => setQuoterOpen(false)} />
     </section>
   )
 }
