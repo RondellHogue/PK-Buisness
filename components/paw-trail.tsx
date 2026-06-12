@@ -157,7 +157,7 @@ export function PawTrail() {
   if (prints.length === 0) return null
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden blur-[3px]" aria-hidden>
       {prints.map((p, i) => {
         const threshold = i / prints.length
         const revealed = progress >= threshold

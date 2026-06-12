@@ -66,11 +66,20 @@ export function PetIconPattern() {
 
   useEffect(() => {
     const onScroll = () => {
-      const docScroll = document.documentElement.scrollHeight - window.innerHeight
-      const ratio = docScroll > 0 ? window.scrollY / docScroll : 0
-      // Darker (1) at the top, gradually more transparent lower down, but never
-      // fully gone — floors at 0.25 so the icons always stay visible.
-      setScrollFade(Math.max(0.25, 1 - ratio * 0.85))
+      const pricing = document.getElementById('pricing')
+      const scrollY = window.scrollY
+      const vh = window.innerHeight
+      if (pricing) {
+        // Fade out completely by the time the pricing section reaches view.
+        const pricingTop = pricing.getBoundingClientRect().top + scrollY
+        const fadeEnd = pricingTop - vh * 0.5
+        const fadeStart = fadeEnd - 600
+        if (scrollY <= fadeStart) setScrollFade(1)
+        else if (scrollY >= fadeEnd) setScrollFade(0)
+        else setScrollFade(1 - (scrollY - fadeStart) / (fadeEnd - fadeStart))
+      } else {
+        setScrollFade(Math.max(0, 1 - scrollY / 900))
+      }
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -84,7 +93,7 @@ export function PetIconPattern() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden lg:block"
+      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden blur-[2px] lg:block"
       style={{ opacity: scrollFade, transition: 'opacity 0.2s linear' }}
     >
       {items.map((it) => {
