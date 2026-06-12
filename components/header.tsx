@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -32,7 +33,18 @@ export function Header() {
               className="inline-flex items-center justify-center p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={menuOpen ? 'close' : 'open'}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="inline-flex"
+                >
+                  {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </motion.span>
+              </AnimatePresence>
             </button>
           </div>
 
@@ -62,22 +74,44 @@ export function Header() {
         </div>
 
         {/* Dropdown Menu */}
-        {menuOpen && (
-          <div className="-mx-6 px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl backdrop-saturate-150">
-            <nav className="flex flex-col gap-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={handleNavClick}
-                  className="rounded-lg px-3 py-2.5 text-base font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {menuOpen && (
+            <motion.div
+              key="menu"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden -mx-6"
+            >
+              <div className="px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl backdrop-saturate-150">
+                <nav className="flex flex-col gap-1">
+                  {navigation.map((item, i) => (
+                    <motion.div
+                      key={item.name}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{
+                        duration: 0.25,
+                        ease: 'easeOut',
+                        delay: menuOpen ? 0.08 + i * 0.05 : 0,
+                      }}
+                    >
+                      <Link
+                        href={item.href}
+                        onClick={handleNavClick}
+                        className="block rounded-lg px-3 py-2.5 text-base font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+                      >
+                        {item.name}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )
