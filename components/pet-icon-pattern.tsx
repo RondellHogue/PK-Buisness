@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Dog, Cat, Bird, Rabbit, Fish, Turtle, PawPrint, Bone } from 'lucide-react'
 
@@ -58,23 +58,11 @@ function buildPattern(): Deco[] {
 
 export function PetIconPattern() {
   const items = useMemo(buildPattern, [])
-  const [scrollOpacity, setScrollOpacity] = useState(1)
-
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY
-      setScrollOpacity(Math.max(0, 1 - y / 700))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block"
-      style={{ opacity: scrollOpacity, transition: 'opacity 0.25s linear' }}
+      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden lg:block"
     >
       {items.map((it) => {
         const Icon = it.Icon

@@ -74,27 +74,29 @@ export function PawTrail() {
   useEffect(() => {
     function build() {
       const dog = document.getElementById('hero-dog')
-      const pricing = document.getElementById('pricing')
-      if (!dog || !pricing) return
+      if (!dog) return
 
       const vh = window.innerHeight
       const scrollY = window.scrollY
       const dogRect = dog.getBoundingClientRect()
-      const pricingRect = pricing.getBoundingClientRect()
+      const docHeight = document.documentElement.scrollHeight
 
       const dogCenterDocY = dogRect.top + scrollY + dogRect.height / 2
-      const pricingTopDocY = pricingRect.top + scrollY
+      const dogBottomDocY = dogRect.bottom + scrollY
 
-      // Trail occupies the document space between the dog and the pricing heading
-      const startPlaceY = dogCenterDocY + dogRect.height * 0.15
-      const endPlaceY = pricingTopDocY - 48
+      // Trail begins just BELOW the dog image (so no print lands on the photo)
+      // and continues all the way down to the bottom of the page.
+      const startPlaceY = dogBottomDocY + 60
+      const endPlaceY = docHeight - 120
 
       // Scroll range during which the trail is revealed
       const startScroll = dogCenterDocY - vh / 2 // dog reaches center of screen
-      const endScroll = pricingTopDocY - vh * 0.5 // pricing heading approaches view
+      const endScroll = docHeight - vh * 1.1 // fully revealed near the bottom
 
       const span = Math.max(endPlaceY - startPlaceY, 120)
-      const count = Math.max(12, Math.round(span / 70))
+      const count = Math.max(12, Math.round(span / 78))
+      // Number of horizontal meanders scales with page length
+      const waves = Math.max(4, span / 520)
       const speciesCycle: Species[] = ['dog', 'dog', 'cat', 'mouse', 'cat', 'dog', 'bird', 'mouse']
 
       const next: Print[] = []
@@ -102,10 +104,10 @@ export function PawTrail() {
         const t = i / (count - 1)
         const y = startPlaceY + t * span
         // Winding horizontal path: meanders across the screen and drifts toward edges
-        const wave = Math.sin(t * Math.PI * 3.2)
-        const x = 50 + wave * 34
+        const wave = Math.sin(t * Math.PI * waves)
+        const x = 50 + wave * 36
         // direction of travel for rotation
-        const slope = Math.cos(t * Math.PI * 3.2)
+        const slope = Math.cos(t * Math.PI * waves)
         const rotate = -slope * 32 + (t * 18 - 9)
         const side: -1 | 1 = i % 2 === 0 ? -1 : 1
         next.push({
@@ -155,7 +157,7 @@ export function PawTrail() {
   if (prints.length === 0) return null
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden" aria-hidden>
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
       {prints.map((p, i) => {
         const threshold = i / prints.length
         const revealed = progress >= threshold
