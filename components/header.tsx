@@ -42,9 +42,9 @@ export function Header() {
               <Image
                 src="/images/logo-cropped.png"
                 alt="Pet Keepings"
-                width={180}
-                height={45}
-                className="w-[180px] h-auto dark:invert"
+                width={56}
+                height={56}
+                className="h-14 w-auto dark:invert"
                 priority
               />
             </Link>
