@@ -44,7 +44,7 @@ export function HeroSection() {
         >
           <button
             onClick={() => setQuoterOpen(true)}
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-[-8px_6px_12px_rgba(8,15,40,0.45)] hover:shadow-[-10px_8px_16px_rgba(8,15,40,0.55)]"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-[0px_4px_8px_rgba(8,15,40,0.3)] hover:shadow-[0px_6px_10px_rgba(8,15,40,0.4)]"
           >
             Start Saving
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
