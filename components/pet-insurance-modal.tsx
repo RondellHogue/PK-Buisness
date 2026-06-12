@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Snail, Squirrel, Mouse, ChevronRight, Loader2 } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createClient } from '@/lib/supabase/client'
 
 const petTypes = [
   { id: 'dog', name: 'Dog', icon: Dog },
@@ -10,12 +11,22 @@ const petTypes = [
   { id: 'bird', name: 'Bird', icon: Bird },
   { id: 'rabbit', name: 'Rabbit', icon: Rabbit },
   { id: 'fish', name: 'Fish', icon: Fish },
-  { id: 'reptile', name: 'Reptile', icon: Turtle },
-  { id: 'snake', name: 'Snake', icon: Snail },
+  { id: 'turtle', name: 'Turtle', icon: Turtle },
+  { id: 'snake', name: 'Snake', icon: Worm },
   { id: 'ferret', name: 'Ferret', icon: Squirrel },
-  { id: 'rodent', name: 'Rodent', icon: Mouse },
+  { id: 'rodent', name: 'Rodent', icon: Rat },
   { id: 'other', name: 'Other', icon: null },
 ]
+
+interface RecommendedProvider {
+  id: string
+  name: string
+  url: string
+  logo_url: string | null
+  brand_color: string
+  monthly_cost: string
+  rating: number
+}
 
 const punnyPhrases = [
   'Fetching the best deals...',
@@ -39,7 +50,22 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   const [petCounts, setPetCounts] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(false)
   const [phraseIndex, setPhraseIndex] = useState(0)
+  const [allProviders, setAllProviders] = useState<RecommendedProvider[]>([])
+  const [recommended, setRecommended] = useState<RecommendedProvider[]>([])
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
+  const supabase = useRef(createClient())
+
+  useEffect(() => {
+    if (!isOpen) return
+    async function load() {
+      const { data } = await supabase.current
+        .from('insurance_providers')
+        .select('id, name, url, logo_url, brand_color, monthly_cost, rating')
+        .eq('is_active', true)
+      if (data) setAllProviders(data as RecommendedProvider[])
+    }
+    load()
+  }, [isOpen])
 
   const togglePet = (id: string) => {
     setSelectedPets((prev) => {
@@ -73,7 +99,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   const runLoading = () => {
     setLoading(true)
     setPhraseIndex(0)
-    // Rotate punny phrases every other second (every 1s here for liveliness)
+    // Randomly curate a fresh set of recommendations each quote
+    const shuffled = [...allProviders].sort(() => Math.random() - 0.5)
+    const count = Math.min(shuffled.length, 3 + Math.floor(Math.random() * 2)) // 3 or 4
+    setRecommended(shuffled.slice(0, count))
+    // Rotate punny phrases every second
     const interval = setInterval(() => {
       setPhraseIndex((i) => (i + 1) % punnyPhrases.length)
     }, 1000)
@@ -100,6 +130,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
     setPetCounts({})
     setLoading(false)
     setPhraseIndex(0)
+    setRecommended([])
     onClose()
   }
 
@@ -235,25 +266,64 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
 
             {step === 3 && !loading && (
               <div>
-                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">Recommended Providers</h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Based on your selection, here are the best matches</p>
-                <div className="space-y-3">
-                  {['Lemonade', 'Spot', 'Embrace', 'Healthy Paws'].map((provider, i) => (
-                    <div key={provider} className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                          <span className="text-blue-600 font-semibold">{provider[0]}</span>
-                        </div>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">Your Curated Matches</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Based on your selection, here are the best providers for you. Click any to visit their site.</p>
+                <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                  {recommended.map((provider, i) => (
+                    <motion.a
+                      key={provider.id}
+                      href={provider.url || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08, duration: 0.35 }}
+                      className="group relative flex items-center justify-between overflow-hidden p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl border border-transparent hover:border-blue-500 hover:shadow-md transition-all"
+                    >
+                      <span
+                        aria-hidden
+                        className="absolute left-0 top-0 h-full w-1.5"
+                        style={{ backgroundColor: provider.brand_color }}
+                      />
+                      <div className="flex items-center gap-3 pl-2">
+                        {provider.logo_url ? (
+                          <img
+                            src={provider.logo_url || '/placeholder.svg'}
+                            alt={`${provider.name} logo`}
+                            className="w-12 h-12 rounded-xl object-contain bg-white shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold text-white shrink-0"
+                            style={{ backgroundColor: provider.brand_color }}
+                          >
+                            {provider.name.charAt(0)}
+                          </div>
+                        )}
                         <div>
-                          <p className="font-medium text-zinc-900 dark:text-white">{provider}</p>
-                          <p className="text-sm text-zinc-500">From ${15 + i * 5}/mo</p>
+                          {i === 0 && (
+                            <span className="inline-block mb-1 rounded-full bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-600">
+                              Top Match
+                            </span>
+                          )}
+                          <p className="font-medium text-zinc-900 dark:text-white">{provider.name}</p>
+                          <div className="flex items-center gap-2 text-sm text-zinc-500">
+                            <span>{provider.monthly_cost || 'Custom pricing'}</span>
+                            <span className="flex items-center gap-0.5 text-yellow-500">
+                              <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                              {provider.rating}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 text-yellow-500">
-                        {'★'.repeat(5 - Math.floor(i / 2))}
-                        <span className="text-zinc-400">{'★'.repeat(Math.floor(i / 2))}</span>
-                      </div>
-                    </div>
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-white transition-transform group-hover:scale-105 shrink-0"
+                        style={{ backgroundColor: provider.brand_color }}
+                      >
+                        Visit
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </span>
+                    </motion.a>
                   ))}
                 </div>
               </div>
