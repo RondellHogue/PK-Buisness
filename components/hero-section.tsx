@@ -32,12 +32,13 @@ export function HeroSection() {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6, delay: 0.1 }}
-  className={`${fredoka.className} text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white text-balance`}
+  className={`${fredoka.className} text-[1.75rem] sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
 >
   One{" "}
   <span className="text-blue-600 dark:text-blue-400 font-extrabold">
     Emergency Visit
   </span>{" "}
+  <br className="md:hidden" />
   Could Cost{" "}
   <span className="text-blue-600 dark:text-blue-400 font-extrabold">
     Thousands
