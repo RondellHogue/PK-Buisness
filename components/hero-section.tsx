@@ -39,7 +39,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
-          Don&apos;t wait for the costly vet bill to realize the value of pet insurance.
+          Don&apos;t wait for the costly vet bill to realize the value of pet insurance. Get your furry family member covered today!
         </motion.p>
 
         {/* CTA Buttons */}
