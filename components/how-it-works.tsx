@@ -22,7 +22,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 md:py-28 bg-gradient-to-b from-blue-700/90 via-blue-200/60 to-white dark:from-blue-800/90 dark:via-zinc-800 dark:to-zinc-900">
+    <section id="how-it-works" data-paw-region="gradient" className="py-20 md:py-28 bg-gradient-to-b from-blue-700/90 via-blue-200/60 to-white dark:from-blue-800/90 dark:via-zinc-800 dark:to-zinc-900">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">

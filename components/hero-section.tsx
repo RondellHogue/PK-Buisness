@@ -69,7 +69,7 @@ export function HeroSection() {
       {/* Blue lower panel: begins just above the dog. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div className="relative bg-blue-700/90 dark:bg-blue-800/90 backdrop-blur-xl pt-20 md:pt-28 pb-6">
+      <div data-paw-region="blue" className="relative bg-blue-700/90 dark:bg-blue-800/90 backdrop-blur-xl pt-20 md:pt-28 pb-6">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"

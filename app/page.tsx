@@ -16,10 +16,10 @@ export default function HomePage() {
       <PawTrail />
       <Header />
       <HeroSection />
-      <FeaturesSection />
       <PricingSection />
-      <HowItWorks />
       <LearnMoreSection />
+      <HowItWorks />
+      <FeaturesSection />
       <Footer />
       <ThemeToggle />
     </main>
