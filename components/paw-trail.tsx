@@ -151,10 +151,11 @@ export function PawTrail() {
         return value
       }
 
-      // Trail originates UP in the white area above the dog, so the first prints
-      // sit behind that white section and appear to emerge from behind it. They
-      // then continue all the way down to the bottom of the page.
-      const startPlaceY = Math.max(dogTopDocY - vh * 0.55, 0)
+      // The trail starts just below the initial mid-viewport line so that NOTHING
+      // is visible before the user scrolls. As the user scrolls, the reveal line
+      // (mid-screen) descends past each print in sequence, making the leading
+      // footprint "chase" the user around the middle of the visible screen.
+      const startPlaceY = Math.max(dogTopDocY - vh * 0.4, vh * 0.55)
       const endPlaceY = docHeight - 160
 
       const span = Math.max(endPlaceY - startPlaceY, 200)
@@ -221,15 +222,16 @@ export function PawTrail() {
 
   if (prints.length === 0) return null
 
-  // Reveal any print whose position is above a line slightly BELOW the viewport
-  // bottom, so footprints stay just ahead of the user as they scroll.
-  const lead = view.vh * 0.35
-  const revealLine = view.scrollY + view.vh + lead
+  // The reveal line sits at the middle of the visible screen. As the user scrolls
+  // it descends through the page, revealing each print in sequence so the leading
+  // footprint stays roughly halfway down the viewport, "chasing" the user. Before
+  // any scroll (scrollY === 0) the line is above the first print, so nothing shows.
+  const revealLine = view.scrollY + view.vh * 0.5
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden blur-[3px]" aria-hidden>
       {prints.map((p, i) => {
-        const revealed = p.y <= revealLine
+        const revealed = view.scrollY > 0 && p.y <= revealLine
         return (
           <div
             key={i}
