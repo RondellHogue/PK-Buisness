@@ -6,6 +6,12 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
+import { Fredoka } from 'next/font/google'
+
+const fredoka = Fredoka({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+})
 
 export function HeroSection() {
   const [quoterOpen, setQuoterOpen] = useState(false)
@@ -26,7 +32,7 @@ export function HeroSection() {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6, delay: 0.1 }}
-  className="font-['Fredoka'] text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white text-balance"
+  className={`${fredoka.className} text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white text-balance`}
 >
   One{" "}
   <span className="text-blue-600 dark:text-blue-400 font-extrabold">
