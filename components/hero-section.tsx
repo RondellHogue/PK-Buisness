@@ -26,7 +26,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1] text-balance"
+          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-zinc-900 dark:text-white leading-[1.05] text-balance"
         >
           One <span className="text-blue-600 dark:text-blue-400">Emergency Visit</span> Could Cost{' '}
           <span className="text-blue-600 dark:text-blue-400">Thousands</span>
@@ -39,7 +39,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
-          Don&apos;t wait for the costly vet bill to realize the value of pet insurance. Get your furry family member covered today!
+          Don&apos;t wait for the expensive vet bill to get pet insurance. Get your furry family member covered today!
         </motion.p>
 
         {/* CTA Buttons */}
