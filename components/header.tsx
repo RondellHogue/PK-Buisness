@@ -22,7 +22,10 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/10 shadow-sm shadow-black/5">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/10 shadow-sm shadow-black/5"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-3 items-center h-20">
           {/* Hamburger Menu (left) */}
@@ -84,7 +87,7 @@ export function Header() {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden -mx-6"
             >
-              <div className="px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl backdrop-saturate-150">
+              <div className="px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150">
                 <nav className="flex flex-col gap-1">
                   {navigation.map((item, i) => (
                     <motion.div
