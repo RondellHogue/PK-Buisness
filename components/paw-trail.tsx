@@ -89,9 +89,11 @@ export function PawTrail() {
       const startPlaceY = dogBottomDocY + 220
       const endPlaceY = docHeight - 120
 
-      // Scroll range during which the trail is revealed
-      const startScroll = dogCenterDocY - vh / 2 // dog reaches center of screen
-      const endScroll = docHeight - vh * 1.1 // fully revealed near the bottom
+      // Scroll range during which the trail is revealed. Start later (well after
+      // the dog has passed center) so users clearly watch the prints "walk" down
+      // the page as they scroll rather than having them appear all at once.
+      const startScroll = dogCenterDocY + vh * 0.35
+      const endScroll = docHeight - vh * 0.9
 
       const span = Math.max(endPlaceY - startPlaceY, 120)
       const count = Math.max(12, Math.round(span / 78))

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
@@ -9,6 +9,13 @@ import { PetInsuranceModal } from './pet-insurance-modal'
 
 export function HeroSection() {
   const [quoterOpen, setQuoterOpen] = useState(false)
+
+  // The header's morphing "Start Saving" button opens this same quoter modal.
+  useEffect(() => {
+    const open = () => setQuoterOpen(true)
+    window.addEventListener('open-quoter', open)
+    return () => window.removeEventListener('open-quoter', open)
+  }, [])
 
   return (
     <section className="relative pt-32 md:pt-40 bg-transparent">
@@ -43,6 +50,7 @@ export function HeroSection() {
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <button
+            id="hero-start-saving"
             onClick={() => setQuoterOpen(true)}
             className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-[0px_4px_8px_rgba(8,15,40,0.3)] hover:shadow-[0px_6px_10px_rgba(8,15,40,0.4)]"
           >
@@ -67,7 +75,7 @@ export function HeroSection() {
           preserveAspectRatio="none"
           aria-hidden="true"
           className="absolute top-0 left-0 w-full h-[60px] md:h-[90px] text-white dark:text-zinc-900"
-          style={{ filter: 'drop-shadow(0 6px 6px rgba(0,0,0,0.15))' }}
+          style={{ filter: 'drop-shadow(0 9px 9px rgba(0,0,0,0.22))' }}
         >
           <path d="M0,0 L1440,0 L1440,72 C960,-12 480,-12 0,72 Z" fill="currentColor" />
         </svg>

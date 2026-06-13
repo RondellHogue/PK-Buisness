@@ -63,6 +63,15 @@ function buildPattern(): Deco[] {
 export function PetIconPattern() {
   const items = useMemo(buildPattern, [])
   const [scrollFade, setScrollFade] = useState(1)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -93,11 +102,16 @@ export function PetIconPattern() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden blur-[2px] lg:block"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden blur-[2px]"
       style={{ opacity: scrollFade, transition: 'opacity 0.2s linear' }}
     >
       {items.map((it) => {
         const Icon = it.Icon
+        // On mobile, only keep edge-hugging icons and render them smaller and
+        // fainter so they stay subtle and unobtrusive behind the content.
+        if (isMobile && it.offset > 7) return null
+        const size = isMobile ? Math.round(it.size * 0.7) : it.size
+        const opacity = isMobile ? it.baseOpacity * 0.5 : it.baseOpacity
         return (
           <motion.div
             key={it.id}
@@ -106,7 +120,7 @@ export function PetIconPattern() {
               top: `${it.top}%`,
               [it.side]: `${it.offset}%`,
               color: ROYAL_BLUE,
-              opacity: it.baseOpacity,
+              opacity,
             }}
             animate={{
               y: [0, it.drift, 0],
@@ -119,7 +133,7 @@ export function PetIconPattern() {
               ease: 'easeInOut',
             }}
           >
-            <Icon style={{ width: it.size, height: it.size }} strokeWidth={1.8} />
+            <Icon style={{ width: size, height: size }} strokeWidth={1.8} />
           </motion.div>
         )
       })}

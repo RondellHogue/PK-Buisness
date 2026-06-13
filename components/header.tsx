@@ -1,17 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  // When the hero "Start Saving" button scrolls out of view, the header CTA
+  // morphs from "Contact Us" into "Start Saving" (and back when it returns).
+  const [showStartSaving, setShowStartSaving] = useState(false)
 
   const handleNavClick = () => {
     setMenuOpen(false)
   }
+
+  useEffect(() => {
+    const target = document.getElementById('hero-start-saving')
+    if (!target) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStartSaving(!entry.isIntersecting),
+      { rootMargin: '-72px 0px 0px 0px', threshold: 0 },
+    )
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [])
 
   const navigation = [
     { name: 'Pet Insurance', href: '/providers' },
@@ -65,14 +79,39 @@ export function Header() {
             </Link>
           </div>
 
-          {/* CTA Button (right) */}
+          {/* CTA Button (right) - morphs between Contact Us and Start Saving */}
           <div className="flex justify-end">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
-            >
-              Contact Us
-            </Link>
+            {showStartSaving ? (
+              <button
+                key="start-saving"
+                onClick={() => window.dispatchEvent(new Event('open-quoter'))}
+                className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+              >
+                <motion.span
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="inline-flex items-center gap-1.5"
+                >
+                  Start Saving
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                </motion.span>
+              </button>
+            ) : (
+              <Link
+                key="contact-us"
+                href="/contact"
+                className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+              >
+                <motion.span
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                >
+                  Contact Us
+                </motion.span>
+              </Link>
+            )}
           </div>
         </div>
 
