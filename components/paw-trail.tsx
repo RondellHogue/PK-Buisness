@@ -111,8 +111,7 @@ export function PawTrail() {
       const dogRect = dog.getBoundingClientRect()
       const docHeight = document.documentElement.scrollHeight
 
-      const dogCenterDocY = dogRect.top + scrollY + dogRect.height / 2
-      const dogBottomDocY = dogRect.bottom + scrollY
+      const dogTopDocY = dogRect.top + scrollY
 
       // Measure the page's blue regions (in document coordinates) so prints can
       // be colored white over blue and royal blue over white, blending smoothly
@@ -153,13 +152,14 @@ export function PawTrail() {
         return value
       }
 
-      // Trail begins just BELOW the dog image and continues to the bottom.
-      const startPlaceY = dogBottomDocY + 40
+      // Trail originates UP in the white area above the dog, so the first prints
+      // sit behind that white section and appear to emerge from behind it. They
+      // then continue all the way down to the bottom of the page.
+      const startPlaceY = Math.max(dogTopDocY - vh * 0.55, 0)
       const endPlaceY = docHeight - 160
 
-      // Scroll range during which the trail is revealed. Start a little after the
-      // dog passes so users watch the prints "walk" down the page as they scroll.
-      const startScroll = dogCenterDocY + vh * 0.25
+      // Reveal as soon as the user starts scrolling, and finish near the bottom.
+      const startScroll = 0
       const endScroll = docHeight - vh * 0.8
 
       const span = Math.max(endPlaceY - startPlaceY, 200)
