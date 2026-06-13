@@ -23,14 +23,20 @@ export function HeroSection() {
       <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-12">
         {/* Headline */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.03em] text-zinc-900 dark:text-white leading-[1.05] text-balance"
-        >
-          One <span className="text-blue-600 dark:text-blue-400">Emergency Visit</span> Could Cost{' '}
-          <span className="text-blue-600 dark:text-blue-400">Thousands</span>
-        </motion.h1>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+  className="font-['Playfair_Display'] text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white text-balance"
+>
+  One{" "}
+  <span className="text-blue-600 dark:text-blue-400 italic">
+    Emergency Visit
+  </span>{" "}
+  Could Cost{" "}
+  <span className="text-blue-600 dark:text-blue-400 italic">
+    Thousands
+  </span>
+</motion.h1>
 
         {/* Subheadline */}
         <motion.p
