@@ -22,7 +22,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" data-paw-region="blue" className="py-20 md:py-28 bg-blue-700/90 dark:bg-blue-800/90">
+    <section id="how-it-works" data-paw-region="blue" className="py-20 md:py-28 bg-blue-700 dark:bg-blue-800">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">

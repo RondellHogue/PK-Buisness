@@ -68,7 +68,7 @@ const reviews = [
 
 export function LearnMoreSection() {
   return (
-    <section id="learn-more" data-paw-region="blue" className="py-24 bg-blue-700/90 dark:bg-blue-800/90">
+    <section id="learn-more" data-paw-region="blue" className="py-24 bg-blue-700 dark:bg-blue-800">
       <div className="max-w-6xl mx-auto px-6">
         {/* Why Pet Insurance */}
         <motion.div 

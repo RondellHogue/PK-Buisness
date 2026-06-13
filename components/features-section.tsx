@@ -28,7 +28,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section data-paw-region="gradient" className="pt-8 pb-40 md:pt-10 md:pb-56 bg-gradient-to-b from-blue-700/90 from-50% via-blue-700/90 via-65% to-white dark:from-blue-800/90 dark:via-blue-800/90 dark:to-zinc-900">
+    <section data-paw-region="gradient" className="pt-8 pb-24 md:pt-10 md:pb-32 bg-gradient-to-b from-blue-700 from-70% to-white dark:from-blue-800 dark:to-zinc-900">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">

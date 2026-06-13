@@ -22,7 +22,7 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="blue" className="py-24 bg-blue-700/90 dark:bg-blue-800/90">
+    <section id="pricing" data-paw-region="blue" className="py-24 bg-blue-700 dark:bg-blue-800">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
