@@ -96,8 +96,7 @@ function Paw({ species, color }: { species: Species; color: string }) {
 
 export function PawTrail() {
   const [prints, setPrints] = useState<Print[]>([])
-  const [bounds, setBounds] = useState<{ startScroll: number; endScroll: number } | null>(null)
-  const [progress, setProgress] = useState(0)
+  const [view, setView] = useState<{ scrollY: number; vh: number }>({ scrollY: 0, vh: 0 })
   const rafRef = useRef<number | null>(null)
 
   // Build the procedural trail between the dog image and the bottom of the page
@@ -158,15 +157,11 @@ export function PawTrail() {
       const startPlaceY = Math.max(dogTopDocY - vh * 0.55, 0)
       const endPlaceY = docHeight - 160
 
-      // Reveal as soon as the user starts scrolling, and finish near the bottom.
-      const startScroll = 0
-      const endScroll = docHeight - vh * 0.8
-
       const span = Math.max(endPlaceY - startPlaceY, 200)
       // Evenly spaced steps roughly every 70px
       const count = Math.max(14, Math.round(span / 70))
-      // A few gentle, full meanders down the page (integer keeps it smooth/even)
-      const waves = Math.max(3, Math.round(span / 1100))
+      // A few wide meanders down the page (integer keeps it smooth/even)
+      const waves = Math.max(4, Math.round(span / 850))
       const speciesCycle: Species[] = ['dog', 'dog', 'cat', 'mouse', 'cat', 'dog', 'bird', 'mouse']
 
       const next: Print[] = []
@@ -174,14 +169,14 @@ export function PawTrail() {
         const t = i / (count - 1)
         // Even vertical spacing from just below the dog to the page bottom
         const y = startPlaceY + t * span
-        // Gentle winding centerline (stays well within the page width)
+        // Wide winding path that wanders across most of the screen width
         const wave = Math.sin(t * Math.PI * 2 * waves)
-        // Alternate left/right foot around the centerline like real footsteps
+        // Alternate left/right foot around the path like real footsteps
         const foot: -1 | 1 = i % 2 === 0 ? -1 : 1
-        const x = clamp(50 + wave * 14 + foot * 4, 8, 92)
+        const x = clamp(50 + wave * 34 + foot * 4, 6, 94)
         // Rotation points in the direction of travel (down the meander)
         const slope = Math.cos(t * Math.PI * 2 * waves)
-        const rotate = 180 - slope * 22
+        const rotate = 180 - slope * 26
         next.push({
           x,
           y,
@@ -194,7 +189,7 @@ export function PawTrail() {
       }
 
       setPrints(next)
-      setBounds({ startScroll, endScroll })
+      setView({ scrollY: window.scrollY, vh })
     }
 
     build()
@@ -207,16 +202,13 @@ export function PawTrail() {
     }
   }, [])
 
-  // Track scroll progress within the active range
+  // Track scroll position so prints can reveal just ahead of the viewport
   useEffect(() => {
-    if (!bounds) return
     function onScroll() {
       if (rafRef.current) return
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null
-        const { startScroll, endScroll } = bounds!
-        const p = (window.scrollY - startScroll) / (endScroll - startScroll)
-        setProgress(Math.min(1, Math.max(0, p)))
+        setView({ scrollY: window.scrollY, vh: window.innerHeight })
       })
     }
     onScroll()
@@ -225,15 +217,19 @@ export function PawTrail() {
       window.removeEventListener('scroll', onScroll)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [bounds])
+  }, [])
 
   if (prints.length === 0) return null
+
+  // Reveal any print whose position is above a line slightly BELOW the viewport
+  // bottom, so footprints stay just ahead of the user as they scroll.
+  const lead = view.vh * 0.35
+  const revealLine = view.scrollY + view.vh + lead
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden blur-[3px]" aria-hidden>
       {prints.map((p, i) => {
-        const threshold = i / prints.length
-        const revealed = progress >= threshold
+        const revealed = p.y <= revealLine
         return (
           <div
             key={i}
