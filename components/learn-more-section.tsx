@@ -68,7 +68,7 @@ const reviews = [
 
 export function LearnMoreSection() {
   return (
-    <section id="learn-more" data-paw-region="blue" className="py-24 bg-blue-700 dark:bg-blue-800">
+    <section id="learn-more" className="py-24 bg-zinc-50 dark:bg-zinc-800">
       <div className="max-w-6xl mx-auto px-6">
         {/* Why Pet Insurance */}
         <motion.div 
@@ -77,11 +77,11 @@ export function LearnMoreSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-blue-100 tracking-wide uppercase">Learn More</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
+          <span className="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wide uppercase">Learn More</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mt-3 mb-4">
             Why Pet Insurance Matters
           </h2>
-          <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
+          <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
             Protect your furry family members from unexpected medical expenses
           </p>
         </motion.div>
@@ -161,7 +161,7 @@ export function LearnMoreSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h3 className="text-2xl font-bold text-white text-center mb-8">
+          <h3 className="text-2xl font-bold text-zinc-900 dark:text-white text-center mb-8">
             What Pet Owners Are Saying
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

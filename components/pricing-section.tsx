@@ -22,7 +22,7 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="blue" className="py-24 bg-blue-700 dark:bg-blue-800">
+    <section id="pricing" data-paw-region="gradient" className="pt-24 pb-32 bg-gradient-to-b from-blue-700 from-75% to-white dark:from-blue-800 dark:to-zinc-900">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

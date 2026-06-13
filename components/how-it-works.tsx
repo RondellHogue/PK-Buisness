@@ -22,7 +22,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" data-paw-region="blue" className="py-20 md:py-28 bg-blue-700 dark:bg-blue-800">
+    <section id="how-it-works" className="py-20 md:py-28 bg-white dark:bg-zinc-900">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -30,7 +30,7 @@ export function HowItWorks() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-sm font-medium text-blue-100 mb-3"
+            className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-3"
           >
             How It Works
           </motion.p>
@@ -39,7 +39,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-semibold text-white"
+            className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-white"
           >
             Get covered in 3 simple steps
           </motion.h2>
@@ -58,22 +58,22 @@ export function HowItWorks() {
             >
               {/* Connector Line (desktop only) */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-px bg-white/30" />
+                <div className="hidden md:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-px bg-zinc-200 dark:bg-zinc-700" />
               )}
 
               <div className="text-center">
                 {/* Step Number */}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/15 text-white font-semibold text-lg mb-6 relative z-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold text-lg mb-6 relative z-10">
                   {step.number}
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-white mb-3">
+                <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-3">
                   {step.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-blue-100/90 leading-relaxed">
+                <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">
                   {step.description}
                 </p>
               </div>
