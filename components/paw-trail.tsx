@@ -155,38 +155,40 @@ export function PawTrail() {
 
       // Trail begins just BELOW the dog image and continues to the bottom.
       const startPlaceY = dogBottomDocY + 40
-      const endPlaceY = docHeight - 120
+      const endPlaceY = docHeight - 160
 
-      // Scroll range during which the trail is revealed. Start later (well after
-      // the dog has passed center) so users clearly watch the prints "walk" down
-      // the page as they scroll rather than having them appear all at once.
-      const startScroll = dogCenterDocY + vh * 0.35
-      const endScroll = docHeight - vh * 0.9
+      // Scroll range during which the trail is revealed. Start a little after the
+      // dog passes so users watch the prints "walk" down the page as they scroll.
+      const startScroll = dogCenterDocY + vh * 0.25
+      const endScroll = docHeight - vh * 0.8
 
-      const span = Math.max(endPlaceY - startPlaceY, 120)
-      const count = Math.max(12, Math.round(span / 78))
-      // Number of horizontal meanders scales with page length
-      const waves = Math.max(4, span / 520)
+      const span = Math.max(endPlaceY - startPlaceY, 200)
+      // Evenly spaced steps roughly every 70px
+      const count = Math.max(14, Math.round(span / 70))
+      // A few gentle, full meanders down the page (integer keeps it smooth/even)
+      const waves = Math.max(3, Math.round(span / 1100))
       const speciesCycle: Species[] = ['dog', 'dog', 'cat', 'mouse', 'cat', 'dog', 'bird', 'mouse']
 
       const next: Print[] = []
       for (let i = 0; i < count; i++) {
         const t = i / (count - 1)
+        // Even vertical spacing from just below the dog to the page bottom
         const y = startPlaceY + t * span
-        // Winding horizontal path: meanders across the screen and drifts toward edges
-        const wave = Math.sin(t * Math.PI * waves)
-        const x = 50 + wave * 36
-        // direction of travel for rotation
-        const slope = Math.cos(t * Math.PI * waves)
-        const rotate = -slope * 32 + (t * 18 - 9)
-        const side: -1 | 1 = i % 2 === 0 ? -1 : 1
+        // Gentle winding centerline (stays well within the page width)
+        const wave = Math.sin(t * Math.PI * 2 * waves)
+        // Alternate left/right foot around the centerline like real footsteps
+        const foot: -1 | 1 = i % 2 === 0 ? -1 : 1
+        const x = clamp(50 + wave * 14 + foot * 4, 8, 92)
+        // Rotation points in the direction of travel (down the meander)
+        const slope = Math.cos(t * Math.PI * 2 * waves)
+        const rotate = 180 - slope * 22
         next.push({
           x,
           y,
           rotate,
-          scale: 0.85 + ((i * 13) % 7) / 20,
+          scale: 0.9,
           species: speciesCycle[i % speciesCycle.length],
-          side,
+          side: foot,
           color: colorForBlueness(bluenessAt(y)),
         })
       }

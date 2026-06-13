@@ -22,7 +22,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" data-paw-region="gradient" className="py-20 md:py-28 bg-gradient-to-b from-blue-700/90 via-blue-200/60 to-white dark:from-blue-800/90 dark:via-zinc-800 dark:to-zinc-900">
+    <section id="how-it-works" data-paw-region="blue" className="py-20 md:py-28 bg-blue-700/90 dark:bg-blue-800/90">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -58,22 +58,22 @@ export function HowItWorks() {
             >
               {/* Connector Line (desktop only) */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-px bg-zinc-200 dark:bg-zinc-700" />
+                <div className="hidden md:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-px bg-white/30" />
               )}
 
               <div className="text-center">
                 {/* Step Number */}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold text-lg mb-6 relative z-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/15 text-white font-semibold text-lg mb-6 relative z-10">
                   {step.number}
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-white mb-3">
                   {step.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                <p className="text-blue-100/90 leading-relaxed">
                   {step.description}
                 </p>
               </div>
