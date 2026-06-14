@@ -17,7 +17,7 @@ const petTypes = [
 
 const providers = [
   { name: 'Lemonade', price: 15, rating: 5, features: ['Fast claims', 'No waiting period', 'Customizable plans'] },
-  { name: 'Spot', price: 20, rating: 5, features: ['Wellness coverage', 'No age limits', '90% reimbursement'] },
+  { name: 'Spot', price: 20, rating: 5, features: ['Wellness coverage', 'No age limits', '90% reimbursement'], url: 'https://sovrn.co/ie9i24q' },
   { name: 'Embrace', price: 25, rating: 4, features: ['Dental coverage', 'Rx coverage', 'Diminishing deductible'] },
   { name: 'Healthy Paws', price: 30, rating: 4, features: ['Unlimited benefits', 'Fast processing', 'No caps'] },
 ]
@@ -241,9 +241,20 @@ export default function GetStartedPage() {
                           </li>
                         ))}
                       </ul>
-                      <button className="w-full py-3 text-sm font-medium text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                        Get Quote
-                      </button>
+                      {(provider as { url?: string }).url ? (
+                        <a
+                          href={(provider as { url?: string }).url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full py-3 text-center text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                        >
+                          Get Quote
+                        </a>
+                      ) : (
+                        <button className="w-full py-3 text-sm font-medium text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                          Get Quote
+                        </button>
+                      )}
                     </motion.div>
                   ))}
                 </div>
