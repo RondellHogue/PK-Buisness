@@ -52,6 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}>
+      <head>
+        <meta name="impact-site-verification" value="95c87286-baec-4dfa-ae89-cf284a79b4f4" />
+      </head>
       <body className="font-sans antialiased bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
         <ThemeProvider>
           <SettingsProvider>
