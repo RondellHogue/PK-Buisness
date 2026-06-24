@@ -86,7 +86,7 @@ export function HeroSection() {
       {/* Blue lower panel: begins just above the pets. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-10 md:pb-14">
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-0">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
@@ -134,19 +134,6 @@ export function HeroSection() {
             className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent to-blue-700 dark:to-blue-800"
           />
         </div>
-
-        {/* Badge - sits below the pets' faded transition point */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="relative z-10 mt-6 flex justify-center"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-            Independent research · Provider info updated regularly
-          </span>
-        </motion.div>
       </div>
 
       <PetInsuranceModal isOpen={quoterOpen} onClose={() => setQuoterOpen(false)} />

@@ -34,7 +34,12 @@ export function PricingSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-blue-100 tracking-wide uppercase">Pricing</span>
+          {/* Trust badge — now sits within the raised foreground shelf */}
+          <span className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+            Independent research · Provider info updated regularly
+          </span>
+          <span className="block text-sm font-medium text-blue-100 tracking-wide uppercase">Pricing</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
             Understanding Pet Care Costs
           </h2>
