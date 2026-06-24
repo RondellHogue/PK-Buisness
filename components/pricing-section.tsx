@@ -22,14 +22,7 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-28 bg-blue-700 dark:bg-blue-800">
-      {/* Clean hard break into the next section — no gradient. A clearly visible
-          tapered separator line (bright in the centre, fading to the edges) marks
-          the seam between blue and white so it reads as an intentional divider. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-        <div className="h-[2px] w-[88%] rounded-full bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_1px_rgba(255,255,255,0.35)]" />
-      </div>
-
+    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-24 bg-blue-700 dark:bg-blue-800">
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

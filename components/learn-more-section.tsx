@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Shield, Heart, DollarSign, Clock } from 'lucide-react'
+import { Shield, Heart, DollarSign, Clock, ArrowRight } from 'lucide-react'
 
 const benefits = [
   {
@@ -38,7 +38,26 @@ const considerations = [
 
 export function LearnMoreSection() {
   return (
-    <section id="learn-more" className="py-24 bg-zinc-50 dark:bg-zinc-800">
+    /* This white section is pulled up over the blue section above it and given
+       rounded top corners, an upward depth shadow (so the blue appears to recede
+       behind it) and a lit top "lip" — making it read as a raised shelf sitting in
+       front of the blue. z-10 keeps it above the blue; no overflow-hidden so the
+       floating button and shadows are never clipped. */
+    <section
+      id="learn-more"
+      className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-zinc-50 dark:bg-zinc-800 pt-32 pb-24 shadow-[0_-18px_45px_-15px_rgba(2,6,23,0.55),inset_0_2px_0_0_rgba(255,255,255,0.9)] dark:shadow-[0_-18px_45px_-15px_rgba(0,0,0,0.65),inset_0_1px_0_0_rgba(255,255,255,0.08)]"
+    >
+      {/* Floating CTA — same style as the hero "Start Saving" button. It straddles
+          the shelf lip: mostly in the blue above, with its blue glow spilling onto
+          the white ledge below. z-20 keeps it above the shelf surface. */}
+      <a
+        href="/quiz"
+        className="group absolute left-1/2 -top-7 z-20 -translate-x-1/2 inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-glow-blue hover:shadow-glow-blue-lg"
+      >
+        Find Your Match
+        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+      </a>
+
       <div className="max-w-6xl mx-auto px-6">
         {/* Why Pet Insurance */}
         <motion.div
