@@ -23,15 +23,11 @@ const insuranceCosts = [
 export function PricingSection() {
   return (
     <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-28 bg-blue-700 dark:bg-blue-800">
-      {/* Blurred decorative glow blobs for depth in the blue field */}
-      <div aria-hidden="true" className="pointer-events-none absolute -top-10 -left-24 h-80 w-80 rounded-full bg-blue-400/40 blob-blur" />
-      <div aria-hidden="true" className="pointer-events-none absolute top-32 -right-20 h-96 w-96 rounded-full bg-sky-300/30 blob-blur" />
-      <div aria-hidden="true" className="pointer-events-none absolute top-1/3 left-1/3 h-72 w-72 rounded-full bg-blue-500/30 blob-blur" />
-
-      {/* Clean hard break into the next section — no gradient at all. A single
-          minimal accent hairline marks the seam so it reads intentional. */}
+      {/* Clean hard break into the next section — no gradient. A clearly visible
+          tapered separator line (bright in the centre, fading to the edges) marks
+          the seam between blue and white so it reads as an intentional divider. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-        <div className="h-px w-[88%] bg-gradient-to-r from-transparent via-sky-200/80 to-transparent" />
+        <div className="h-[2px] w-[88%] rounded-full bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_1px_rgba(255,255,255,0.35)]" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6">
