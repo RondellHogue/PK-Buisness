@@ -31,7 +31,7 @@ export function PricingSection() {
       {/* Clean hard break into the next section — no gradient at all. A single
           minimal accent hairline marks the seam so it reads intentional. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-        <div className="h-px w-[88%] bg-gradient-to-r from-transparent via-sky-300/50 to-transparent" />
+        <div className="h-px w-[88%] bg-gradient-to-r from-transparent via-sky-200/80 to-transparent" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6">

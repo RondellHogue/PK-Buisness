@@ -123,13 +123,15 @@ export function HeroSection() {
             width={1914}
             height={822}
             className="w-full h-auto select-none"
-            style={{
-              WebkitMaskImage:
-                'linear-gradient(to bottom, black 94%, transparent 100%)',
-              maskImage:
-                'linear-gradient(to bottom, black 94%, transparent 100%)',
-            }}
             priority
+          />
+
+          {/* Dissolve the pets' lower bodies into the exact panel blue. Painting
+              blue ON TOP (rather than masking color out) avoids the pale fur fringe
+              that a transparency mask produced, giving an even, clean transition. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-blue-700 dark:to-blue-800"
           />
 
           {/* Minimal tapered hairline the pets stand on — a very slight, clean
