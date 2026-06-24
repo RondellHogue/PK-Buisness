@@ -17,7 +17,6 @@ const footerLinks = {
   trust: [
     { name: 'How We Review', href: '/methodology' },
     { name: 'Editorial Standards', href: '/editorial-standards' },
-    { name: 'How We Make Money', href: '/how-we-make-money' },
     { name: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
   ],
   legal: [
