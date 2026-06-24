@@ -29,6 +29,67 @@ interface RecommendedProvider {
   rating: number
 }
 
+// Age tiers, each with a representative age range shown to the user
+const ageOptions = [
+  { label: 'Young', range: '0–2 years' },
+  { label: 'Adult', range: '3–7 years' },
+  { label: 'Senior', range: '8+ years' },
+]
+
+// Budget tiers mirror the "Find Your Match" quiz wording
+const budgetOptions = [
+  { label: 'Tight', detail: 'Keep it low' },
+  { label: 'Moderate', detail: 'Value matters' },
+  { label: 'Flexible', detail: 'I want the best plan' },
+]
+
+// Reusable slider used for the age and budget questions
+function QuizSlider({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; range?: string; detail?: string }[]
+  value: number
+  onChange: (index: number) => void
+}) {
+  const current = options[value]
+  return (
+    <div className="mt-4">
+      <div className="mb-8 text-center">
+        <span className="text-2xl font-semibold text-blue-600">{current.label}</span>
+        {(current.range || current.detail) && (
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{current.range ?? current.detail}</p>
+        )}
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={options.length - 1}
+        step={1}
+        value={value}
+        onChange={(e) => onChange(parseInt(e.target.value))}
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-200 dark:bg-zinc-700 accent-blue-600"
+        aria-label="Select an option"
+      />
+      <div className="mt-3 flex justify-between">
+        {options.map((o, i) => (
+          <button
+            key={o.label}
+            type="button"
+            onClick={() => onChange(i)}
+            className={`text-xs font-medium transition-colors ${
+              i === value ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const punnyPhrases = [
   'Fetching the best deals...',
   'Paws-ing to compare providers...',
@@ -50,6 +111,8 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   const [showAllPets, setShowAllPets] = useState(false)
   const [selectedPets, setSelectedPets] = useState<string[]>([])
   const [petCounts, setPetCounts] = useState<Record<string, number>>({})
+  const [ageIndex, setAgeIndex] = useState(1)
+  const [budgetIndex, setBudgetIndex] = useState(1)
   const [loading, setLoading] = useState(false)
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [allProviders, setAllProviders] = useState<RecommendedProvider[]>([])
@@ -86,11 +149,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   }
 
   const handleNext = () => {
-    if (step === 1) {
-      setStep(2)
-    } else if (step === 2) {
-      setStep(3)
+    if (step === 4) {
+      setStep(5)
       runLoading()
+    } else if (step < 4) {
+      setStep(step + 1)
     }
   }
 
@@ -131,6 +194,8 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
     setShowAllPets(false)
     setSelectedPets([])
     setPetCounts({})
+    setAgeIndex(1)
+    setBudgetIndex(1)
     setLoading(false)
     setPhraseIndex(0)
     setRecommended([])
@@ -159,7 +224,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
           <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Find Your Coverage</h2>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">Step {step} of 3</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">Step {step} of 5</p>
             </div>
             <button onClick={handleClose} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
               <X className="w-5 h-5 text-zinc-500" />
@@ -170,7 +235,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
           <div className="h-1 bg-zinc-100 dark:bg-zinc-800">
             <div 
               className="h-full bg-blue-600 transition-all duration-300"
-              style={{ width: `${(step / 3) * 100}%` }}
+              style={{ width: `${(step / 5) * 100}%` }}
             />
           </div>
 
@@ -258,7 +323,23 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               </div>
             )}
 
-            {step === 3 && loading && (
+            {step === 3 && (
+              <div>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">How old is your pet?</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Slide to the life stage that fits best</p>
+                <QuizSlider options={ageOptions} value={ageIndex} onChange={setAgeIndex} />
+              </div>
+            )}
+
+            {step === 4 && (
+              <div>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">What is your monthly budget?</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Slide to set your comfort level</p>
+                <QuizSlider options={budgetOptions} value={budgetIndex} onChange={setBudgetIndex} />
+              </div>
+            )}
+
+            {step === 5 && loading && (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-6" />
                 <AnimatePresence mode="wait">
@@ -277,7 +358,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               </div>
             )}
 
-            {step === 3 && !loading && (
+            {step === 5 && !loading && (
               <div>
                 <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">Your Curated Matches</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Based on your selection, here are the best providers for you. Click any to visit their site.</p>
@@ -361,7 +442,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               >
                 Back
               </button>
-              {step < 3 ? (
+              {step < 5 ? (
                 <button
                   onClick={handleNext}
                   disabled={step === 1 && selectedPets.length === 0}
