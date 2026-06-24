@@ -112,10 +112,7 @@ export function Header() {
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="inline-flex items-center gap-1.5"
                 >
-                  {/* Compact "GO" on mobile so the CTA never overlaps the logo */}
-                  <span className="sm:hidden">GO</span>
-                  <span className="hidden sm:inline">Contact Us</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:hidden transition-transform group-hover:translate-x-0.5" />
+                  Contact Us
                 </motion.span>
               </Link>
             )}

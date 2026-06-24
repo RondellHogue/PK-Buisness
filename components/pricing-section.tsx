@@ -46,7 +46,7 @@ export function PricingSection() {
   // above) then up to its natural position as the user scrolls — making the blue
   // appear to expand upward over the pets. Using translateY keeps it GPU-composited
   // (no layout shift, smooth 60fps). A spring softens the motion.
-  const yRaw = useTransform(scrollYProgress, [0, 1], [96, 0])
+  const yRaw = useTransform(scrollYProgress, [0, 1], [72, 0])
   const ySpring = useSpring(yRaw, { stiffness: 120, damping: 22, mass: 0.3 })
 
   return (

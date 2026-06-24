@@ -32,7 +32,7 @@ export function HeroSection() {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6, delay: 0.1 }}
-  className={`${fredoka.className} text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
+  className={`${fredoka.className} text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
 >
   <span className="whitespace-nowrap md:whitespace-normal">
     One{" "}
@@ -54,7 +54,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-base md:text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
+          className="mt-6 text-sm md:text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
           Don&apos;t wait for the costly vet bill to realize the value of pet insurance. Cover your furry family member today!
         </motion.p>
@@ -86,7 +86,7 @@ export function HeroSection() {
       {/* Blue lower panel: begins just above the pets. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-0">
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-20 md:pb-0">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
@@ -126,12 +126,12 @@ export function HeroSection() {
             priority
           />
 
-          {/* Short, subtle dissolve that only hides the image's hard bottom edge
-              into the panel blue. No heavy blur, no line — the depth/separation is
-              created by the raised Pricing "shelf" that rises below. */}
+          {/* Depth shadow at the pets' base instead of a flat blue fade: it
+              darkens the lower edge so the animals read as tucked BEHIND the raised
+              Pricing shelf below, rather than floating on the blue. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent to-blue-700 dark:to-blue-800"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent via-blue-900/30 to-blue-950/70"
           />
         </div>
       </div>

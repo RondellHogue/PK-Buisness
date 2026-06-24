@@ -89,8 +89,9 @@ export function ProvidersList() {
             drawbacks included.
           </p>
         </div>
-        {/* Two-up tiles on mobile to fit more on screen; single column on desktop.
-            An opened card spans the full row so its review stays readable. */}
+        {/* Compact two-up tiles on mobile so ~4 fit on screen at once; the full
+            review opens in a full-screen overlay. Single roomy column on desktop
+            where the review expands inline. */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-1 lg:gap-5">
           {providers.map((provider, index) => (
             <ProviderCard key={provider.id} provider={provider} index={index} />
@@ -184,109 +185,262 @@ function ProviderCard({ provider, index }: { provider: Provider; index: number }
   const reviews = formatReviews(provider.review_count)
   const review = getProviderReview(provider.name)
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.4 }}
-      className={`relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 ${
-        open ? 'col-span-2 lg:col-span-1' : ''
-      }`}
-    >
-      <span aria-hidden className="absolute left-0 top-0 h-full w-1.5" style={{ backgroundColor: provider.brand_color }} />
+  // Lock body scroll while the mobile full-screen overlay is open (mobile only;
+  // the desktop accordion should not lock scrolling).
+  useEffect(() => {
+    if (!open) return
+    if (!window.matchMedia('(max-width: 1023px)').matches) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [open])
 
-      <div className="flex flex-col gap-4 p-4 pl-5 sm:gap-6 sm:p-6 sm:pl-8 lg:flex-row lg:items-center lg:gap-8">
-        {/* Logo + name */}
-        <div className="flex items-center gap-3 sm:gap-4 lg:w-56 lg:shrink-0">
-          {provider.logo_url ? (
-            <img
-              src={provider.logo_url || '/placeholder.svg'}
-              alt={`${provider.name} logo`}
-              className="h-12 w-12 shrink-0 rounded-xl object-contain bg-white sm:h-16 sm:w-16"
-            />
-          ) : (
-            <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
-              style={{ backgroundColor: provider.brand_color }}
-            >
-              {provider.name.charAt(0)}
-            </div>
-          )}
-          <div>
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{provider.name}</h3>
-            <div className="mt-1 flex items-center gap-1.5">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-medium text-zinc-900 dark:text-white">{provider.rating}</span>
-              {reviews && <span className="text-xs text-zinc-400">· {reviews}</span>}
+  return (
+    <>
+      {/* ---------------------- Compact tile (mobile only) ---------------------- */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ delay: Math.min(index * 0.04, 0.3), duration: 0.4 }}
+        className="relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 lg:hidden"
+      >
+        <span aria-hidden className="absolute left-0 top-0 h-full w-1.5" style={{ backgroundColor: provider.brand_color }} />
+        <div className="flex flex-1 flex-col p-4 pl-5">
+          <div className="flex items-center gap-3">
+            {provider.logo_url ? (
+              <img
+                src={provider.logo_url || '/placeholder.svg'}
+                alt={`${provider.name} logo`}
+                className="h-10 w-10 shrink-0 rounded-lg object-contain bg-white"
+              />
+            ) : (
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-base font-bold text-white"
+                style={{ backgroundColor: provider.brand_color }}
+              >
+                {provider.name.charAt(0)}
+              </div>
+            )}
+            <div className="min-w-0">
+              <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-white">{provider.name}</h3>
+              <div className="mt-0.5 flex items-center gap-1">
+                <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs font-medium text-zinc-900 dark:text-white">{provider.rating}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Stats — numeric values are paired with a small visual bar so the figure
-            reads at a glance rather than as a bare number. */}
-        <div className="grid flex-1 grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5">
-          <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} pct={pctOf(leadingNum(provider.monthly_cost), 80)} barColor={provider.brand_color} />
-          <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
-          <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} pct={leadingNum(provider.reimbursement)} barColor={provider.brand_color} />
-          <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
-          <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
-        </div>
+          <div className="mt-3">
+            <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} pct={pctOf(leadingNum(provider.monthly_cost), 80)} barColor={provider.brand_color} />
+          </div>
 
-        {/* CTA — stacked full-width buttons on mobile so they fit a half-width tile */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center lg:w-auto lg:shrink-0 lg:flex-col lg:items-end">
-          <a
-            href={provider.url || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
-            style={{ backgroundColor: provider.brand_color }}
+          <button
+            onClick={() => setOpen(true)}
+            className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-200 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            aria-expanded={open}
           >
-            Visit Site
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-          {review && (
-            <button
-              onClick={() => setOpen((v) => !v)}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-              aria-expanded={open}
-            >
-              {open ? 'Hide review' : 'Read review'}
-              <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
-            </button>
-          )}
+            View More
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Highlights */}
-      {provider.highlights?.length > 0 && (
-        <div className="flex flex-wrap gap-2 border-t border-zinc-100 dark:border-zinc-800 px-6 py-3 pl-8">
-          {provider.highlights.map((h) => (
-            <span
-              key={h}
-              className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
-            >
-              {h}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Expandable review */}
-      <AnimatePresence initial={false}>
-        {open && review && (
+      {/* ------------------ Full-screen detail overlay (mobile) ----------------- */}
+      <AnimatePresence>
+        {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden border-t border-zinc-100 dark:border-zinc-800"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] bg-black/50 lg:hidden"
+            onClick={() => setOpen(false)}
           >
-            <ReviewBody name={provider.name} review={review} />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+              className="absolute inset-x-0 bottom-0 top-12 flex flex-col overflow-hidden rounded-t-3xl bg-white dark:bg-zinc-900"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Sticky overlay header */}
+              <div className="flex items-center gap-3 border-b border-zinc-100 dark:border-zinc-800 p-4">
+                {provider.logo_url ? (
+                  <img
+                    src={provider.logo_url || '/placeholder.svg'}
+                    alt={`${provider.name} logo`}
+                    className="h-11 w-11 shrink-0 rounded-xl object-contain bg-white"
+                  />
+                ) : (
+                  <div
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white"
+                    style={{ backgroundColor: provider.brand_color }}
+                  >
+                    {provider.name.charAt(0)}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate text-base font-semibold text-zinc-900 dark:text-white">{provider.name}</h3>
+                  <div className="mt-0.5 flex items-center gap-1.5">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-medium text-zinc-900 dark:text-white">{provider.rating}</span>
+                    {reviews && <span className="text-xs text-zinc-400">· {reviews}</span>}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Scrollable body */}
+              <div className="flex-1 overflow-y-auto overscroll-contain">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-4 p-5">
+                  <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} pct={pctOf(leadingNum(provider.monthly_cost), 80)} barColor={provider.brand_color} />
+                  <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
+                  <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} pct={leadingNum(provider.reimbursement)} barColor={provider.brand_color} />
+                  <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
+                  <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
+                </div>
+
+                {provider.highlights?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 px-5 pb-2">
+                    {provider.highlights.map((h) => (
+                      <span
+                        key={h}
+                        className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {review && <ReviewBody name={provider.name} review={review} />}
+              </div>
+
+              {/* Sticky CTA */}
+              <div className="border-t border-zinc-100 dark:border-zinc-800 p-4">
+                <a
+                  href={provider.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-3 text-sm font-semibold text-white"
+                  style={{ backgroundColor: provider.brand_color }}
+                >
+                  Visit {provider.name}
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+      {/* ----------------------- Full row (desktop only) ------------------------ */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.4 }}
+        className="relative hidden overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 lg:block"
+      >
+        <span aria-hidden className="absolute left-0 top-0 h-full w-1.5" style={{ backgroundColor: provider.brand_color }} />
+
+        <div className="flex flex-row items-center gap-8 p-6 pl-8">
+          {/* Logo + name */}
+          <div className="flex items-center gap-4 w-56 shrink-0">
+            {provider.logo_url ? (
+              <img
+                src={provider.logo_url || '/placeholder.svg'}
+                alt={`${provider.name} logo`}
+                className="h-16 w-16 shrink-0 rounded-xl object-contain bg-white"
+              />
+            ) : (
+              <div
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white"
+                style={{ backgroundColor: provider.brand_color }}
+              >
+                {provider.name.charAt(0)}
+              </div>
+            )}
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{provider.name}</h3>
+              <div className="mt-1 flex items-center gap-1.5">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-medium text-zinc-900 dark:text-white">{provider.rating}</span>
+                {reviews && <span className="text-xs text-zinc-400">· {reviews}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid flex-1 grid-cols-5 gap-x-6">
+            <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} pct={pctOf(leadingNum(provider.monthly_cost), 80)} barColor={provider.brand_color} />
+            <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
+            <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} pct={leadingNum(provider.reimbursement)} barColor={provider.brand_color} />
+            <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
+            <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
+          </div>
+
+          <div className="flex w-auto shrink-0 flex-col items-end gap-2">
+            <a
+              href={provider.url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+              style={{ backgroundColor: provider.brand_color }}
+            >
+              Visit Site
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+            {review && (
+              <button
+                onClick={() => setOpen((v) => !v)}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                aria-expanded={open}
+              >
+                {open ? 'Hide review' : 'Read review'}
+                <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {provider.highlights?.length > 0 && (
+          <div className="flex flex-wrap gap-2 border-t border-zinc-100 dark:border-zinc-800 px-6 py-3 pl-8">
+            {provider.highlights.map((h) => (
+              <span
+                key={h}
+                className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
+              >
+                {h}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <AnimatePresence initial={false}>
+          {open && review && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden border-t border-zinc-100 dark:border-zinc-800"
+            >
+              <ReviewBody name={provider.name} review={review} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </>
   )
 }
 
