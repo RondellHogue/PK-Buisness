@@ -97,13 +97,14 @@ export function HeroSection() {
           <path d="M0,0 L1440,0 L1440,72 C960,-12 480,-12 0,72 Z" fill="currentColor" />
         </svg>
 
-        {/* Soft radial blue glow behind the pets for depth */}
+        {/* Subtle radial blue glow behind the pets for depth. Kept low and high
+            so it never pools into blotchy color near the bottom fade. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-0"
           style={{
             background:
-              'radial-gradient(60% 70% at 50% 70%, rgba(96,165,250,0.55) 0%, rgba(37,99,235,0) 60%)',
+              'radial-gradient(55% 55% at 50% 45%, rgba(96,165,250,0.28) 0%, rgba(37,99,235,0) 65%)',
           }}
         />
 
@@ -124,17 +125,17 @@ export function HeroSection() {
             className="w-full h-auto select-none"
             style={{
               WebkitMaskImage:
-                'linear-gradient(to bottom, black 82%, transparent 99%)',
+                'linear-gradient(to bottom, black 94%, transparent 100%)',
               maskImage:
-                'linear-gradient(to bottom, black 82%, transparent 99%)',
+                'linear-gradient(to bottom, black 94%, transparent 100%)',
             }}
             priority
           />
 
-          {/* Ambient light bar: a clean, solid glowing horizon line the pets stand
-              on. Replaces the muddy fade with a crisp, intentional edge. */}
+          {/* Minimal tapered hairline the pets stand on — a very slight, clean
+              transition, not a strong glow. */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-            <div className="relative h-px w-[92%] bg-gradient-to-r from-transparent via-sky-200 to-transparent shadow-[0_0_24px_6px_rgba(186,230,253,0.55)]" />
+            <div className="h-px w-[80%] bg-gradient-to-r from-transparent via-sky-200/40 to-transparent" />
           </div>
         </div>
 

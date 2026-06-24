@@ -28,11 +28,10 @@ export function PricingSection() {
       <div aria-hidden="true" className="pointer-events-none absolute top-32 -right-20 h-96 w-96 rounded-full bg-sky-300/30 blob-blur" />
       <div aria-hidden="true" className="pointer-events-none absolute top-1/3 left-1/3 h-72 w-72 rounded-full bg-blue-500/30 blob-blur" />
 
-      {/* Clean, minimal seam: a short solid-to-white step plus a crisp ambient
-          light bar — no long muddy gradient. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-white dark:to-zinc-900" />
+      {/* Clean hard break into the next section — no gradient at all. A single
+          minimal accent hairline marks the seam so it reads intentional. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-        <div className="relative h-px w-[92%] bg-gradient-to-r from-transparent via-sky-200/90 to-transparent shadow-[0_0_28px_8px_rgba(186,230,253,0.45)]" />
+        <div className="h-px w-[88%] bg-gradient-to-r from-transparent via-sky-300/50 to-transparent" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6">
