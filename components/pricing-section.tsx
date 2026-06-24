@@ -22,15 +22,18 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-40 bg-blue-700 dark:bg-blue-800">
+    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-28 bg-blue-700 dark:bg-blue-800">
       {/* Blurred decorative glow blobs for depth in the blue field */}
       <div aria-hidden="true" className="pointer-events-none absolute -top-10 -left-24 h-80 w-80 rounded-full bg-blue-400/40 blob-blur" />
       <div aria-hidden="true" className="pointer-events-none absolute top-32 -right-20 h-96 w-96 rounded-full bg-sky-300/30 blob-blur" />
       <div aria-hidden="true" className="pointer-events-none absolute top-1/3 left-1/3 h-72 w-72 rounded-full bg-blue-500/30 blob-blur" />
 
-      {/* Clean, soft fade into the next (white) section — minimal and gradual,
-          no hard diagonal band. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent to-white dark:to-zinc-900" />
+      {/* Clean, minimal seam: a short solid-to-white step plus a crisp ambient
+          light bar — no long muddy gradient. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-white dark:to-zinc-900" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
+        <div className="relative h-px w-[92%] bg-gradient-to-r from-transparent via-sky-200/90 to-transparent shadow-[0_0_28px_8px_rgba(186,230,253,0.45)]" />
+      </div>
 
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 

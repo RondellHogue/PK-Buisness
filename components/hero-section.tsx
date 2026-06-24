@@ -26,7 +26,7 @@ export function HeroSection() {
   return (
     <section className="relative pt-24 md:pt-28 bg-transparent">
       {/* Top white area with headline, subtext and CTAs */}
-      <div className="max-w-4xl mx-auto px-6 text-center pb-2 md:pb-4">
+      <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-10">
         {/* Headline */}
        <motion.h1
   initial={{ opacity: 0, y: 20 }}
@@ -109,8 +109,9 @@ export function HeroSection() {
 
         {/* Full-width pets image, raised so the animals fill most of the panel on
             landing. The background is already transparent so they sit directly on
-            the blue; the bottom edge fades out so the transition is only revealed
-            once the user scrolls past it. */}
+            the blue; the bottom edge fades cleanly so it meets the ambient light
+            bar below without any harsh image cut. No drop-shadow here — it created
+            broken halo artifacts along the faded fur edge. */}
         <div
           id="hero-dog"
           className="relative z-10 w-full"
@@ -120,15 +121,21 @@ export function HeroSection() {
             alt="A group of pets — dogs, cats, a rabbit, a hamster and ferrets — all looking upward"
             width={1914}
             height={822}
-            className="w-full h-auto select-none drop-shadow-[0_18px_30px_rgba(8,15,40,0.35)]"
+            className="w-full h-auto select-none"
             style={{
               WebkitMaskImage:
-                'linear-gradient(to bottom, black 90%, transparent 100%)',
+                'linear-gradient(to bottom, black 82%, transparent 99%)',
               maskImage:
-                'linear-gradient(to bottom, black 90%, transparent 100%)',
+                'linear-gradient(to bottom, black 82%, transparent 99%)',
             }}
             priority
           />
+
+          {/* Ambient light bar: a clean, solid glowing horizon line the pets stand
+              on. Replaces the muddy fade with a crisp, intentional edge. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
+            <div className="relative h-px w-[92%] bg-gradient-to-r from-transparent via-sky-200 to-transparent shadow-[0_0_24px_6px_rgba(186,230,253,0.55)]" />
+          </div>
         </div>
 
         {/* Badge - sits below the pets' faded transition point */}
