@@ -46,7 +46,7 @@ export function PricingSection() {
   // above) then up to its natural position as the user scrolls — making the blue
   // appear to expand upward over the pets. Using translateY keeps it GPU-composited
   // (no layout shift, smooth 60fps). A spring softens the motion.
-  const yRaw = useTransform(scrollYProgress, [0, 1], [72, 0])
+  const yRaw = useTransform(scrollYProgress, [0, 1], [48, 0])
   const ySpring = useSpring(yRaw, { stiffness: 120, damping: 22, mass: 0.3 })
 
   return (
@@ -55,7 +55,7 @@ export function PricingSection() {
       id="pricing"
       data-paw-region="gradient"
       style={{ y: isMobile ? ySpring : 0 }}
-      className="relative z-10 -mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)] will-change-transform"
+      className="relative z-10 -mt-32 md:-mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)] will-change-transform"
     >
       {/* iOS-style pull-tab indicator centered at the top of the blue sheet (mobile only) */}
       <span

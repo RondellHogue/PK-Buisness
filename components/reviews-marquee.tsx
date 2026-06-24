@@ -137,13 +137,15 @@ export function ReviewsMarquee() {
        recede behind it) and a lit top "lip" — making it read as a raised shelf in
        front of the blue. overflow-x-clip keeps the marquee from causing horizontal
        scroll while still allowing the floating CTA to overflow the top edge. */
-    <section className="relative z-20 -mt-16 overflow-x-clip rounded-t-[2.5rem] bg-zinc-50 dark:bg-zinc-800 pt-28 pb-20 shadow-[0_-18px_45px_-15px_rgba(2,6,23,0.55),inset_0_2px_0_0_rgba(255,255,255,0.9)] dark:shadow-[0_-18px_45px_-15px_rgba(0,0,0,0.65),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
-      {/* Floating CTA straddling the shelf lip, glowing onto the blue above. z-30
-          keeps it above the Pricing sheet (z-10), which on mobile animates with a
-          translateY and would otherwise cover the button's upper half. */}
+    <section className="relative z-20 -mt-16 rounded-t-[2.5rem] bg-zinc-50 dark:bg-zinc-800 pt-28 pb-20 shadow-[0_-18px_45px_-15px_rgba(2,6,23,0.55),inset_0_2px_0_0_rgba(255,255,255,0.9)] dark:shadow-[0_-18px_45px_-15px_rgba(0,0,0,0.65),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+      {/* Floating CTA straddling the shelf lip, glowing onto the blue above. z-40
+          keeps it on the highest layer — above the Pricing sheet (z-10, which
+          animates on mobile) and this shelf (z-20) — so it is never clipped. The
+          section no longer uses overflow-x-clip (which had forced vertical clipping
+          of this button); horizontal clipping now lives on the marquee wrapper. */}
       <a
         href="/quiz"
-        className="group absolute left-1/2 -top-7 z-30 -translate-x-1/2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-blue-600 px-8 py-4 text-base font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700 shadow-glow-blue hover:shadow-glow-blue-lg"
+        className="group absolute left-1/2 -top-7 z-40 -translate-x-1/2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-blue-600 px-8 py-4 text-base font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700 shadow-glow-blue hover:shadow-glow-blue-lg"
       >
         Find Your Match
         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -163,7 +165,7 @@ export function ReviewsMarquee() {
           fade out via a mask, and vertical padding keeps the soft card shadows from
           being clipped by the section's overflow. */}
       <div
-        className="group relative mt-12"
+        className="group relative mt-12 overflow-x-clip"
         style={{
           WebkitMaskImage:
             'linear-gradient(to right, transparent, black 6%, black 94%, transparent)',

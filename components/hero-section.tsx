@@ -86,7 +86,7 @@ export function HeroSection() {
       {/* Blue lower panel: begins just above the pets. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-20 md:pb-0">
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-24 md:pb-0">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
@@ -126,12 +126,12 @@ export function HeroSection() {
             priority
           />
 
-          {/* Depth shadow at the pets' base instead of a flat blue fade: it
-              darkens the lower edge so the animals read as tucked BEHIND the raised
-              Pricing shelf below, rather than floating on the blue. */}
+          {/* Soft depth shadow at the pets' base (stays within the blue family so it
+              never reads as black): darkens the lower edge so the animals read as
+              tucked BEHIND the raised Pricing shelf that overlaps them below. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent via-blue-900/30 to-blue-950/70"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent via-blue-800/25 to-blue-900/45"
           />
         </div>
       </div>
