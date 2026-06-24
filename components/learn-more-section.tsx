@@ -66,7 +66,12 @@ export function LearnMoreSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wide uppercase">Learn More</span>
+          {/* Trust badge — styled for the white shelf surface */}
+          <span className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 rounded-full border border-blue-100 dark:border-blue-900/50 shadow-sm">
+            <span className="w-1.5 h-1.5 bg-blue-600 dark:bg-blue-400 rounded-full animate-pulse" />
+            Independent research · Provider info updated regularly
+          </span>
+          <span className="block text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wide uppercase">Learn More</span>
           <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mt-3 mb-4">
             What Pet Insurance Actually Does
           </h2>

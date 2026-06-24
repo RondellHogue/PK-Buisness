@@ -25,7 +25,7 @@ export function PricingSection() {
     <section
       id="pricing"
       data-paw-region="gradient"
-      className="relative z-10 -mt-10 overflow-hidden rounded-t-[2.5rem] pt-28 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)]"
+      className="relative z-10 -mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)]"
     >
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
@@ -34,11 +34,6 @@ export function PricingSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          {/* Trust badge — now sits within the raised foreground shelf */}
-          <span className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-            Independent research · Provider info updated regularly
-          </span>
           <span className="block text-sm font-medium text-blue-100 tracking-wide uppercase">Pricing</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
             Understanding Pet Care Costs
