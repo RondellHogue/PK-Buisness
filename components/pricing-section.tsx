@@ -22,7 +22,11 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-24 bg-blue-700 dark:bg-blue-800">
+    <section
+      id="pricing"
+      data-paw-region="gradient"
+      className="relative z-10 -mt-10 overflow-hidden rounded-t-[2.5rem] pt-28 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)]"
+    >
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

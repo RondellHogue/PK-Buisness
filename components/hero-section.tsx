@@ -126,19 +126,13 @@ export function HeroSection() {
             priority
           />
 
-          {/* Dissolve the pets' lower bodies into the exact panel blue. Painting
-              blue ON TOP (rather than masking color out) avoids the pale fur fringe
-              that a transparency mask produced, giving an even, clean transition. */}
+          {/* Short, subtle dissolve that only hides the image's hard bottom edge
+              into the panel blue. No heavy blur, no line — the depth/separation is
+              created by the raised Pricing "shelf" that rises below. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-blue-700 dark:to-blue-800"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent to-blue-700 dark:to-blue-800"
           />
-
-          {/* Minimal tapered hairline the pets stand on — a very slight, clean
-              transition, not a strong glow. */}
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-            <div className="h-px w-[80%] bg-gradient-to-r from-transparent via-sky-200/40 to-transparent" />
-          </div>
         </div>
 
         {/* Badge - sits below the pets' faded transition point */}
