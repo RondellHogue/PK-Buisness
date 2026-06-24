@@ -1,34 +1,35 @@
 import { PageHeader } from '@/components/page-header'
 import { Footer } from '@/components/footer'
-import { Heart, Shield, Search, Users } from 'lucide-react'
+import { Heart, Shield, Search, Scale } from 'lucide-react'
+import Link from 'next/link'
 
-const stats = [
-  { value: '10,000+', label: 'Pet owners helped' },
-  { value: '25+', label: 'Insurers compared' },
-  { value: '$2.4M', label: 'In vet bills covered' },
-  { value: '4.8/5', label: 'Average user rating' },
+const principles = [
+  { value: 'Same criteria for everyone', label: 'Every provider is assessed against the same checklist' },
+  { value: 'Reasoning shown', label: 'We explain why a plan may suit a situation' },
+  { value: 'Updated regularly', label: 'Provider details are reviewed and refreshed' },
+  { value: 'Disclosed funding', label: 'We say plainly how the site is paid for' },
 ]
 
 const values = [
   {
     icon: Search,
-    title: 'Unbiased comparison',
-    text: 'We lay out the facts on every plan so you can compare coverage, deductibles, and reimbursement side by side without the sales pressure.',
+    title: 'Comparison over persuasion',
+    text: 'We lay out coverage, deductibles, waiting periods, and reimbursement side by side so you can weigh plans yourself, rather than steering you toward one answer.',
   },
   {
     icon: Shield,
     title: 'Education first',
-    text: 'Most pet owners do not learn about insurance until they are facing a frightening vet bill. We want to change that with clear, honest guidance.',
+    text: 'Many pet owners only learn how insurance works while facing a frightening vet bill. We try to explain the trade-offs clearly and early, in plain language.',
+  },
+  {
+    icon: Scale,
+    title: 'Both sides of every plan',
+    text: 'No provider is perfect. We aim to describe the genuine advantages and the real drawbacks of each option, including who a plan is not a good fit for.',
   },
   {
     icon: Heart,
-    title: 'Pets come first',
-    text: 'Every recommendation we make is rooted in one question: what gives this animal the best chance at a long, healthy life?',
-  },
-  {
-    icon: Users,
-    title: 'Built for families',
-    text: 'Whether you have one rescue kitten or a houseful of dogs, we help you find protection that fits your household and your budget.',
+    title: 'Useful whether or not you buy',
+    text: 'Our goal is for you to leave understanding your options better than when you arrived, even if you decide insurance is not right for you.',
   },
 ]
 
@@ -39,26 +40,27 @@ export default function AboutPage() {
       <main>
         {/* Hero */}
         <section className="max-w-3xl mx-auto px-6 pt-16 md:pt-24 pb-12 text-center">
-          <p className="text-sm font-medium text-blue-600 mb-3">Our Mission</p>
+          <p className="text-sm font-medium text-blue-600 mb-3">About Pet Keepings</p>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white text-balance">
-            Raising awareness, one pet at a time
+            A research resource for pet insurance decisions
           </h1>
           <p className="mt-5 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed text-pretty">
-            Pet Keepings is a pet insurance awareness effort built on a simple belief: no family
-            should have to choose between their savings and their pet&apos;s life.
+            Pet Keepings is an independent guide that compares pet insurance providers and explains how
+            coverage works. We are not an insurer and we do not sell policies. Our aim is to make a
+            confusing category easier to understand.
           </p>
         </section>
 
-        {/* Stats */}
+        {/* Principles (replaces fabricated stats) */}
         <section className="max-w-5xl mx-auto px-6 pb-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((s) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {principles.map((s) => (
               <div
-                key={s.label}
-                className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 p-6 text-center"
+                key={s.value}
+                className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 p-6"
               >
-                <div className="text-2xl md:text-3xl font-bold text-blue-600">{s.value}</div>
-                <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{s.label}</div>
+                <div className="text-base font-semibold text-blue-600">{s.value}</div>
+                <div className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{s.label}</div>
               </div>
             ))}
           </div>
@@ -67,49 +69,58 @@ export default function AboutPage() {
         {/* Long form story */}
         <section className="max-w-3xl mx-auto px-6 pb-16">
           <div className="prose-custom space-y-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white">Why we started</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white">Why this site exists</h2>
             <p>
-              Pet Keepings began the way a lot of good ideas do, out of frustration. A few years ago,
-              one of our founders rushed their Labrador, Cooper, to an emergency clinic after he
-              swallowed a tennis ball. The surgery saved his life, but the bill came to just under
-              $6,000. Cooper recovered fully, yet the experience left a lasting mark. How many
-              families, faced with the same moment, would have been forced to say no?
+              Pet insurance is hard to shop for. Coverage terms differ between companies, important
+              details are buried in policy documents, and most comparison content online is written to
+              sell a specific plan. We built Pet Keepings to be the resource we wished existed: a place
+              that gathers the providers worth considering, translates the fine print into plain language,
+              and compares them honestly.
             </p>
             <p>
-              That question became the heart of our work. We discovered that the vast majority of pet
-              owners in this country have no insurance for their animals, often because they simply do
-              not know it exists or assume it is too complicated to be worth it. Meanwhile, the cost of
-              veterinary medicine has been rising steadily, driven by advances that now let vets treat
-              conditions that were untreatable a generation ago, from chemotherapy to orthopedic
-              reconstruction.
+              We are a small, independent effort rather than a large company, and we think that is worth
+              stating plainly. We do not claim a long corporate history or a headcount we do not have.
+              What we can offer is a consistent, transparent process and a commitment to describing both
+              the strengths and the weaknesses of every option.
             </p>
 
             <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white pt-4">How pet insurance actually works</h2>
             <p>
-              At its core, pet insurance functions as a reimbursement model. You continue to visit any
-              licensed veterinarian you trust. When your pet needs care, you pay the clinic and then
-              submit a claim to your insurer. After you meet an annual deductible, the company pays you
-              back a set percentage of the eligible costs, commonly between 70 and 90 percent, up to the
-              limits of your policy.
+              Most pet insurance follows a reimbursement model. You continue to visit any licensed
+              veterinarian you trust. When your pet needs care, you pay the clinic and then submit a
+              claim to your insurer. After you meet an annual deductible, the company pays you back a set
+              percentage of the eligible costs, commonly between 70 and 90 percent, up to the limits of
+              your policy.
             </p>
             <p>
               Plans generally fall into a few categories. Accident-only coverage is the most affordable
               and handles injuries such as broken bones or swallowed objects. Accident and illness plans,
               the most popular choice, add protection for conditions like cancer, diabetes, allergies, and
-              infections. Some insurers also offer optional wellness packages that help offset the cost of
-              routine care such as vaccines and annual exams. Understanding the waiting periods,
-              deductibles, and reimbursement rates of each plan is the key to choosing wisely, and that is
-              exactly where we come in.
+              infections. Some insurers also offer optional wellness packages that help offset routine care
+              such as vaccines and annual exams. Waiting periods, deductibles, reimbursement rates, and
+              exclusions are where plans differ most, and those details are exactly what our comparisons
+              focus on.
             </p>
 
-            <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white pt-4">What we do</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white pt-4">Our research philosophy</h2>
             <p>
-              Pet Keepings is not an insurer, and we never sell policies. Instead, we gather the providers
-              worth considering into one place, translate the fine print into plain language, and give you
-              the tools to compare them honestly. Our goal is for every visitor to leave knowing more than
-              they did when they arrived, whether or not they ever buy a plan. Because the real mission has
-              never been about insurance. It has always been about making sure more pets get the care they
-              deserve.
+              When we summarize a provider, we draw on publicly available information such as the
+              company&apos;s own policy documents and patterns reported across public review sources. We look
+              for recurring themes rather than isolated anecdotes, and we try to present positive and
+              negative findings together. We do not invent customer stories or quote reviews we cannot
+              substantiate. You can read more about this in our{' '}
+              <Link href="/methodology" className="text-blue-600 hover:underline">Review Methodology</Link> and{' '}
+              <Link href="/editorial-standards" className="text-blue-600 hover:underline">Editorial Standards</Link>.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white pt-4">How we stay independent</h2>
+            <p>
+              Some links on this site are affiliate links, which means we may earn a commission if you
+              purchase a policy after clicking through. That funding keeps the site free, but it does not
+              change our assessments or the order in which providers are compared. We explain this in
+              detail on our{' '}
+              <Link href="/how-we-make-money" className="text-blue-600 hover:underline">How We Make Money</Link> and{' '}
+              <Link href="/affiliate-disclosure" className="text-blue-600 hover:underline">Affiliate Disclosure</Link> pages.
             </p>
           </div>
         </section>

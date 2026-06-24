@@ -124,7 +124,7 @@ export function HeroSection() {
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-            Trusted by 10,000+ Pet Owners
+            Independent research · Provider info updated regularly
           </span>
         </motion.div>
       </div>

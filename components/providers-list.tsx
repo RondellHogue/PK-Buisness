@@ -1,9 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Star, ArrowUpRight, ShieldCheck, Wallet, Percent, Clock, Infinity as InfinityIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Star,
+  ArrowUpRight,
+  ShieldCheck,
+  Wallet,
+  Percent,
+  Clock,
+  Infinity as InfinityIcon,
+  ChevronDown,
+  Check,
+  X,
+  Plus,
+  Minus,
+} from 'lucide-react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { getProviderReview, type ProviderReview } from '@/lib/provider-reviews'
 
 interface Provider {
   id: string
@@ -50,10 +65,7 @@ export function ProvidersList() {
     return (
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="h-32 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse"
-          />
+          <div key={i} className="h-32 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
         ))}
       </div>
     )
@@ -68,98 +80,300 @@ export function ProvidersList() {
   }
 
   return (
-    <div className="space-y-5">
-      {providers.map((provider, index) => {
-        const reviews = formatReviews(provider.review_count)
-        return (
-          <motion.a
-            key={provider.id}
+    <div className="space-y-16">
+      <ComparisonTable providers={providers} />
+
+      <div>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">In-depth provider reviews</h2>
+          <p className="mt-2 text-zinc-500 dark:text-zinc-400">
+            Expand any provider for a full breakdown of coverage, claims, pricing, and who it suits, with the
+            drawbacks included.
+          </p>
+        </div>
+        <div className="space-y-5">
+          {providers.map((provider, index) => (
+            <ProviderCard key={provider.id} provider={provider} index={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ----------------------------- Comparison table ---------------------------- */
+
+function ComparisonTable({ providers }: { providers: Provider[] }) {
+  return (
+    <div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">Compare providers at a glance</h2>
+        <p className="mt-2 text-zinc-500 dark:text-zinc-400">
+          Scroll sideways on mobile to see every column. Figures are estimates; confirm current terms with the
+          provider.
+        </p>
+      </div>
+      <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
+        <table className="w-full min-w-[760px] border-collapse text-sm">
+          <thead>
+            <tr className="bg-zinc-50 dark:bg-zinc-800/60 text-left">
+              <th className="sticky left-0 z-10 bg-zinc-50 dark:bg-zinc-800/60 px-4 py-3 font-semibold text-zinc-900 dark:text-white">
+                Provider
+              </th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Monthly</th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Reimbursement</th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Deductible</th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Waiting Period</th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Annual Limit</th>
+              <th className="px-4 py-3 font-semibold text-zinc-900 dark:text-white">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            {providers.map((p) => {
+              const review = getProviderReview(p.name)
+              return (
+                <tr
+                  key={p.id}
+                  className="border-t border-zinc-100 dark:border-zinc-800 align-top hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30"
+                >
+                  <th
+                    scope="row"
+                    className="sticky left-0 z-10 bg-white dark:bg-zinc-900 px-4 py-4 text-left font-medium text-zinc-900 dark:text-white"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        aria-hidden
+                        className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: p.brand_color }}
+                      />
+                      {p.name}
+                    </span>
+                  </th>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.monthly_cost || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.reimbursement || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.deductible || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.wait_period || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.coverage_limit || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{review?.bestFor ?? '—'}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+/* --------------------------- Expandable review card ------------------------ */
+
+function ProviderCard({ provider, index }: { provider: Provider; index: number }) {
+  const [open, setOpen] = useState(false)
+  const reviews = formatReviews(provider.review_count)
+  const review = getProviderReview(provider.name)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.4 }}
+      className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+    >
+      <span aria-hidden className="absolute left-0 top-0 h-full w-1.5" style={{ backgroundColor: provider.brand_color }} />
+
+      <div className="flex flex-col gap-6 p-6 pl-8 lg:flex-row lg:items-center lg:gap-8">
+        {/* Logo + name */}
+        <div className="flex items-center gap-4 lg:w-56 lg:shrink-0">
+          {provider.logo_url ? (
+            <img
+              src={provider.logo_url || '/placeholder.svg'}
+              alt={`${provider.name} logo`}
+              className="h-16 w-16 shrink-0 rounded-xl object-contain bg-white"
+            />
+          ) : (
+            <div
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white"
+              style={{ backgroundColor: provider.brand_color }}
+            >
+              {provider.name.charAt(0)}
+            </div>
+          )}
+          <div>
+            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{provider.name}</h3>
+            <div className="mt-1 flex items-center gap-1.5">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm font-medium text-zinc-900 dark:text-white">{provider.rating}</span>
+              {reviews && <span className="text-xs text-zinc-400">· {reviews}</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
+          <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} />
+          <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
+          <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} />
+          <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
+          <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
+        </div>
+
+        {/* CTA */}
+        <div className="flex items-center gap-3 lg:w-auto lg:shrink-0 lg:flex-col lg:items-end">
+          <a
             href={provider.url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.4 }}
-            className="group relative block overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:border-transparent"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+            style={{ backgroundColor: provider.brand_color }}
           >
-            {/* Brand accent bar */}
+            Visit Site
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
+          {review && (
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+              aria-expanded={open}
+            >
+              {open ? 'Hide review' : 'Read review'}
+              <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Highlights */}
+      {provider.highlights?.length > 0 && (
+        <div className="flex flex-wrap gap-2 border-t border-zinc-100 dark:border-zinc-800 px-6 py-3 pl-8">
+          {provider.highlights.map((h) => (
             <span
-              aria-hidden
-              className="absolute left-0 top-0 h-full w-1.5"
-              style={{ backgroundColor: provider.brand_color }}
-            />
+              key={h}
+              className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
+            >
+              {h}
+            </span>
+          ))}
+        </div>
+      )}
 
-            <div className="flex flex-col gap-6 p-6 pl-8 lg:flex-row lg:items-center lg:gap-8">
-              {/* Logo + name */}
-              <div className="flex items-center gap-4 lg:w-64 lg:shrink-0">
-                {provider.logo_url ? (
-                  <img
-                    src={provider.logo_url || '/placeholder.svg'}
-                    alt={`${provider.name} logo`}
-                    className="h-16 w-16 shrink-0 rounded-xl object-contain bg-white"
-                  />
-                ) : (
-                  <div
-                    className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white"
-                    style={{ backgroundColor: provider.brand_color }}
-                  >
-                    {provider.name.charAt(0)}
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
-                    {provider.name}
-                  </h3>
-                  <div className="mt-1 flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium text-zinc-900 dark:text-white">
-                      {provider.rating}
-                    </span>
-                    {reviews && (
-                      <span className="text-xs text-zinc-400">· {reviews}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
+      {/* Expandable review */}
+      <AnimatePresence initial={false}>
+        {open && review && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden border-t border-zinc-100 dark:border-zinc-800"
+          >
+            <ReviewBody name={provider.name} review={review} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
 
-              {/* Stats */}
-              <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
-                <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} />
-                <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
-                <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} />
-                <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
-                <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
-              </div>
+function ReviewBody({ name, review }: { name: string; review: ProviderReview }) {
+  return (
+    <div className="px-6 py-7 pl-8 space-y-7">
+      <Block title="Overview">
+        <p>{review.overview}</p>
+      </Block>
 
-              {/* CTA */}
-              <div className="flex items-center justify-between gap-4 lg:w-auto lg:shrink-0 lg:flex-col lg:items-end">
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform group-hover:scale-105"
-                  style={{ backgroundColor: provider.brand_color }}
-                >
-                  Visit Site
-                  <ArrowUpRight className="h-4 w-4" />
-                </span>
-              </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 p-5">
+          <h4 className="mb-3 flex items-center gap-2 font-semibold text-emerald-700 dark:text-emerald-400">
+            <Plus className="h-4 w-4" /> Pros
+          </h4>
+          <ul className="space-y-2">
+            {review.pros.map((p) => (
+              <li key={p} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-xl border border-rose-100 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 p-5">
+          <h4 className="mb-3 flex items-center gap-2 font-semibold text-rose-700 dark:text-rose-400">
+            <Minus className="h-4 w-4" /> Cons
+          </h4>
+          <ul className="space-y-2">
+            {review.cons.map((c) => (
+              <li key={c} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <X className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Block title="Coverage Details"><p>{review.coverageDetails}</p></Block>
+        <Block title="Claims Experience"><p>{review.claimsExperience}</p></Block>
+        <Block title="Pricing Considerations"><p>{review.pricingConsiderations}</p></Block>
+        <Block title="Customer Experience"><p>{review.customerExperience}</p></Block>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-xl bg-zinc-50 dark:bg-zinc-800/50 p-4">
+          <h4 className="mb-1 text-sm font-semibold text-zinc-900 dark:text-white">Best for</h4>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">{review.bestFor}</p>
+        </div>
+        <div className="rounded-xl bg-zinc-50 dark:bg-zinc-800/50 p-4">
+          <h4 className="mb-1 text-sm font-semibold text-zinc-900 dark:text-white">Not ideal for</h4>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">{review.notIdealFor}</p>
+        </div>
+      </div>
+
+      <Block title="Alternative providers to consider">
+        <div className="flex flex-wrap gap-2">
+          {review.alternatives.map((alt) => (
+            <span
+              key={alt}
+              className="rounded-full border border-zinc-200 dark:border-zinc-700 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
+            >
+              {alt}
+            </span>
+          ))}
+        </div>
+      </Block>
+
+      <Block title="Frequently asked questions">
+        <div className="space-y-4">
+          {review.faqs.map((f) => (
+            <div key={f.q}>
+              <p className="font-medium text-zinc-900 dark:text-white">{f.q}</p>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{f.a}</p>
             </div>
+          ))}
+        </div>
+      </Block>
 
-            {/* Highlights */}
-            {provider.highlights?.length > 0 && (
-              <div className="flex flex-wrap gap-2 border-t border-zinc-100 dark:border-zinc-800 px-6 py-3 pl-8">
-                {provider.highlights.map((h) => (
-                  <span
-                    key={h}
-                    className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-            )}
-          </motion.a>
-        )
-      })}
+      <div className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-4 text-xs text-zinc-500 dark:text-zinc-400">
+        <p>
+          <span className="font-medium text-zinc-700 dark:text-zinc-300">Review methodology:</span> This summary draws
+          on {name}&apos;s public policy information and recurring themes across independent review sources. See our{' '}
+          <Link href="/methodology" className="text-blue-600 hover:underline">Review Methodology</Link>.
+        </p>
+        <p className="mt-2">
+          <span className="font-medium text-zinc-700 dark:text-zinc-300">Affiliate disclosure:</span> Some links may
+          earn us a commission at no cost to you, and never affect our assessments. See our{' '}
+          <Link href="/affiliate-disclosure" className="text-blue-600 hover:underline">Affiliate Disclosure</Link>.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h4 className="mb-2 font-semibold text-zinc-900 dark:text-white">{title}</h4>
+      <div className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{children}</div>
     </div>
   )
 }
@@ -179,9 +393,7 @@ function Stat({
         <Icon className="h-3.5 w-3.5" />
         {label}
       </div>
-      <div className="mt-1 truncate text-sm font-semibold text-zinc-900 dark:text-white">
-        {value || 'N/A'}
-      </div>
+      <div className="mt-1 truncate text-sm font-semibold text-zinc-900 dark:text-white">{value || 'N/A'}</div>
     </div>
   )
 }

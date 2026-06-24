@@ -4,6 +4,7 @@ import { FeaturesSection } from '@/components/features-section'
 import { PricingSection } from '@/components/pricing-section'
 import { HowItWorks } from '@/components/how-it-works'
 import { LearnMoreSection } from '@/components/learn-more-section'
+import { HowWeEvaluate } from '@/components/how-we-evaluate'
 import { Footer } from '@/components/footer'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { PetIconPattern } from '@/components/pet-icon-pattern'
@@ -18,6 +19,7 @@ export default function HomePage() {
       <HeroSection />
       <PricingSection />
       <LearnMoreSection />
+      <HowWeEvaluate />
       <HowItWorks />
       <FeaturesSection />
       <Footer />
