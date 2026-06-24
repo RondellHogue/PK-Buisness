@@ -86,7 +86,7 @@ export function Header() {
               <button
                 key="start-saving"
                 onClick={() => window.dispatchEvent(new Event('open-quoter'))}
-                className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
               >
                 <motion.span
                   initial={{ opacity: 0, y: 6 }}
@@ -102,7 +102,7 @@ export function Header() {
               <Link
                 key="contact-us"
                 href="/contact"
-                className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
               >
                 <motion.span
                   initial={{ opacity: 0, y: 6 }}

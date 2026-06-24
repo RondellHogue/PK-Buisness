@@ -22,8 +22,13 @@ const insuranceCosts = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" data-paw-region="gradient" className="pt-24 pb-32 bg-gradient-to-b from-blue-700 from-75% to-white dark:from-blue-800 dark:to-zinc-900">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="pricing" data-paw-region="gradient" className="relative overflow-hidden pt-24 pb-32 bg-gradient-to-b from-blue-700 from-75% to-white dark:from-blue-800 dark:to-zinc-900">
+      {/* Blurred decorative glow blobs for depth in the blue field */}
+      <div aria-hidden="true" className="pointer-events-none absolute -top-10 -left-24 h-80 w-80 rounded-full bg-blue-400/40 blob-blur" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-32 -right-20 h-96 w-96 rounded-full bg-sky-300/30 blob-blur" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-1/3 left-1/3 h-72 w-72 rounded-full bg-blue-500/30 blob-blur" />
+
+      <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -45,7 +50,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-xl shadow-blue-900/10"
+            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-soft-lg ring-1 ring-white/40 dark:ring-white/5"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Common Treatment Costs</h3>
             <div className="space-y-5">
@@ -77,7 +82,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-xl shadow-blue-900/10"
+            className="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-2xl p-8 shadow-soft-lg ring-1 ring-white/40 dark:ring-white/5"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Average Insurance Costs</h3>
             <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">

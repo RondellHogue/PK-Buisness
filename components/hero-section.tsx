@@ -69,7 +69,7 @@ export function HeroSection() {
           <button
             id="hero-start-saving"
             onClick={() => setQuoterOpen(true)}
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-[0px_4px_8px_rgba(8,15,40,0.3)] hover:shadow-[0px_6px_10px_rgba(8,15,40,0.4)]"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-glow-blue hover:shadow-glow-blue-lg"
           >
             Start Saving
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -83,50 +83,65 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Blue lower panel: begins just above the dog. The white "cap" has a
+      {/* Blue lower panel: begins just above the pets. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div data-paw-region="blue" className="relative bg-blue-700 dark:bg-blue-800 backdrop-blur-xl pt-20 md:pt-28 pb-6">
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-20 md:pt-28 pb-0">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
           aria-hidden="true"
-          className="absolute top-0 left-0 w-full h-[60px] md:h-[90px] text-white dark:text-zinc-900"
+          className="absolute top-0 left-0 w-full h-[60px] md:h-[90px] text-white dark:text-zinc-900 z-20"
           style={{ filter: 'drop-shadow(0 9px 9px rgba(0,0,0,0.22))' }}
         >
           <path d="M0,0 L1440,0 L1440,72 C960,-12 480,-12 0,72 Z" fill="currentColor" />
         </svg>
 
-        {/* Dog Image Looking Up */}
-        <motion.div
-          id="hero-dog"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="relative flex justify-center"
-        >
-          <Image
-            src="/images/dog-looking-up.png?v=2"
-            alt="Dog looking up"
-            width={280}
-            height={280}
-            className="w-[220px] md:w-[280px] h-auto"
-            priority
-          />
-        </motion.div>
+        {/* Soft radial blue glow behind the pets for depth */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              'radial-gradient(60% 70% at 50% 78%, rgba(96,165,250,0.55) 0%, rgba(37,99,235,0) 60%)',
+          }}
+        />
 
-        {/* Badge - below the dog */}
+        {/* Badge - above the pets */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="relative mt-6 flex justify-center"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="relative z-10 flex justify-center"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
             Independent research · Provider info updated regularly
           </span>
         </motion.div>
+
+        {/* Full-width pets image. Background has been removed so the animals keep
+            their natural colors and sit directly on the panel's blue. The bottom
+            edge fades into the blue for a seamless transition. */}
+        <div
+          id="hero-dog"
+          className="mt-6 md:mt-8 w-full"
+        >
+          <Image
+            src="/images/pets-group-cutout.png"
+            alt="A group of pets — dogs, cats, a rabbit, a hamster and ferrets — all looking upward"
+            width={1914}
+            height={822}
+            className="w-full h-auto select-none drop-shadow-[0_18px_30px_rgba(8,15,40,0.35)]"
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to bottom, black 88%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to bottom, black 88%, transparent 100%)',
+            }}
+            priority
+          />
+        </div>
       </div>
 
       <PetInsuranceModal isOpen={quoterOpen} onClose={() => setQuoterOpen(false)} />
