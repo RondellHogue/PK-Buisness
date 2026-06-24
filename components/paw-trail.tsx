@@ -229,7 +229,7 @@ export function PawTrail() {
   const revealLine = view.scrollY + view.vh * 0.5
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden blur-[3px]" aria-hidden>
+    <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden blur-[3px]" aria-hidden>
       {prints.map((p, i) => {
         const revealed = view.scrollY > 0 && p.y <= revealLine
         return (

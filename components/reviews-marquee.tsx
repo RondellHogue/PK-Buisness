@@ -86,15 +86,29 @@ const REVIEWS: Review[] = [
   },
 ]
 
-function ReviewCard({ review }: { review: Review }) {
+// Soft palette for the avatar initial circles
+const AVATAR_COLORS = [
+  'bg-blue-100 text-blue-700',
+  'bg-amber-100 text-amber-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-rose-100 text-rose-700',
+  'bg-violet-100 text-violet-700',
+  'bg-cyan-100 text-cyan-700',
+]
+
+function ReviewCard({ review, index }: { review: Review; index: number }) {
+  const avatar = AVATAR_COLORS[index % AVATAR_COLORS.length]
   return (
-    <article className="flex w-[300px] shrink-0 flex-col gap-3 rounded-2xl bg-white dark:bg-zinc-800 p-6 shadow-soft ring-1 ring-zinc-100 dark:ring-zinc-700">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="font-semibold text-zinc-900 dark:text-white">{review.name}</p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">via {review.handle}</p>
+    <article className="flex w-[320px] shrink-0 flex-col gap-3 rounded-2xl bg-white dark:bg-zinc-800 p-6 shadow-[0_18px_40px_-12px_rgba(15,23,42,0.18)] ring-1 ring-zinc-100/80 dark:ring-zinc-700">
+      <div className="flex items-center gap-3">
+        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${avatar}`}>
+          {review.name.charAt(0)}
         </div>
-        <div className="flex gap-0.5">
+        <div className="min-w-0">
+          <p className="truncate font-semibold text-zinc-900 dark:text-white">{review.name}</p>
+          <p className="truncate text-xs text-zinc-400 dark:text-zinc-500">via {review.handle}</p>
+        </div>
+        <div className="ml-auto flex gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}
@@ -128,8 +142,10 @@ export function ReviewsMarquee() {
         </p>
       </div>
 
-      {/* Marquee: two identical tracks scroll left in tandem for an infinite loop.
-          Pauses on hover. Edges fade out via a mask. */}
+      {/* Marquee: a single track (the review list duplicated) scrolls continuously
+          right-to-left for an infinite loop, pausing on hover. The horizontal edges
+          fade out via a mask, and vertical padding keeps the soft card shadows from
+          being clipped by the section's overflow. */}
       <div
         className="group relative mt-12"
         style={{
@@ -139,9 +155,9 @@ export function ReviewsMarquee() {
             'linear-gradient(to right, transparent, black 6%, black 94%, transparent)',
         }}
       >
-        <div className="flex w-max gap-5 animate-marquee group-hover:[animation-play-state:paused]">
+        <div className="flex w-max gap-6 px-6 pt-4 pb-12 animate-marquee group-hover:[animation-play-state:paused]">
           {track.map((review, i) => (
-            <ReviewCard key={i} review={review} />
+            <ReviewCard key={i} review={review} index={i} />
           ))}
         </div>
       </div>

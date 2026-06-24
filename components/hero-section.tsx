@@ -24,9 +24,9 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section className="relative pt-32 md:pt-40 bg-transparent">
+    <section className="relative pt-24 md:pt-28 bg-transparent">
       {/* Top white area with headline, subtext and CTAs */}
-      <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-12">
+      <div className="max-w-4xl mx-auto px-6 text-center pb-2 md:pb-4">
         {/* Headline */}
        <motion.h1
   initial={{ opacity: 0, y: 20 }}
@@ -64,7 +64,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <button
             id="hero-start-saving"
@@ -86,7 +86,7 @@ export function HeroSection() {
       {/* Blue lower panel: begins just above the pets. The white "cap" has a
           gently upward-arching curved bottom edge and a soft downward shadow,
           making the white area above look like a slightly raised tab. */}
-      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-20 md:pt-28 pb-0">
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-10 md:pb-14">
         <svg
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
@@ -103,45 +103,46 @@ export function HeroSection() {
           className="pointer-events-none absolute inset-0 z-0"
           style={{
             background:
-              'radial-gradient(60% 70% at 50% 78%, rgba(96,165,250,0.55) 0%, rgba(37,99,235,0) 60%)',
+              'radial-gradient(60% 70% at 50% 70%, rgba(96,165,250,0.55) 0%, rgba(37,99,235,0) 60%)',
           }}
         />
 
-        {/* Badge - above the pets */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="relative z-10 flex justify-center"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-            Independent research · Provider info updated regularly
-          </span>
-        </motion.div>
-
-        {/* Full-width pets image. Background has been removed so the animals keep
-            their natural colors and sit directly on the panel's blue. The bottom
-            edge fades into the blue for a seamless transition. */}
+        {/* Full-width pets image, raised so the animals fill most of the panel on
+            landing. The background is already transparent so they sit directly on
+            the blue; the bottom edge fades out so the transition is only revealed
+            once the user scrolls past it. */}
         <div
           id="hero-dog"
-          className="mt-6 md:mt-8 w-full"
+          className="relative z-10 w-full"
         >
           <Image
-            src="/images/pets-group-cutout.png"
+            src="/images/pets-hero.png"
             alt="A group of pets — dogs, cats, a rabbit, a hamster and ferrets — all looking upward"
             width={1914}
             height={822}
             className="w-full h-auto select-none drop-shadow-[0_18px_30px_rgba(8,15,40,0.35)]"
             style={{
               WebkitMaskImage:
-                'linear-gradient(to bottom, black 88%, transparent 100%)',
+                'linear-gradient(to bottom, black 90%, transparent 100%)',
               maskImage:
-                'linear-gradient(to bottom, black 88%, transparent 100%)',
+                'linear-gradient(to bottom, black 90%, transparent 100%)',
             }}
             priority
           />
         </div>
+
+        {/* Badge - sits below the pets' faded transition point */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="relative z-10 mt-6 flex justify-center"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-white bg-white/15 rounded-full border border-white/25 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+            Independent research · Provider info updated regularly
+          </span>
+        </motion.div>
       </div>
 
       <PetInsuranceModal isOpen={quoterOpen} onClose={() => setQuoterOpen(false)} />
