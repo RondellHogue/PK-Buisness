@@ -29,9 +29,10 @@ export function Header() {
 
   const navigation = [
     { name: 'Pet Insurance', href: '/providers' },
+    { name: 'Find Your Match', href: '/quiz' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Learn More', href: '#learn-more' },
+    { name: 'How We Review', href: '/methodology' },
     { name: 'FAQ', href: '/faq' },
   ]
 
