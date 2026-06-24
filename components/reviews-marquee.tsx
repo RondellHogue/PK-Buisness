@@ -1,6 +1,6 @@
 'use client'
 
-import { Star } from 'lucide-react'
+import { Star, ArrowRight } from 'lucide-react'
 
 interface Review {
   name: string
@@ -15,70 +15,70 @@ interface Review {
 // These reflect recurring themes rather than verbatim single sources.
 const REVIEWS: Review[] = [
   {
-    name: 'Jessica R.',
+    name: 'Jessica Romano',
     handle: 'Trustpilot',
     provider: 'Healthy Paws',
     rating: 5,
     text: 'Filed a claim for my dog\u2019s ACL surgery and was reimbursed 90% within a week. No hassle, no fighting. Genuinely grateful.',
   },
   {
-    name: 'Marcus T.',
+    name: 'Marcus Whitfield',
     handle: 'ConsumerAffairs',
     provider: 'Trupanion',
     rating: 5,
     text: 'The direct-to-vet payment is a game changer. I didn\u2019t have to front thousands of dollars during an emergency. Paid the vet directly.',
   },
   {
-    name: 'Priya S.',
+    name: 'Priya Sharma',
     handle: 'Reddit',
     provider: 'Lemonade',
     rating: 4,
     text: 'App is incredibly easy and premiums are some of the lowest I found for my kitten. Claims through the app were quick for routine stuff.',
   },
   {
-    name: 'David L.',
+    name: 'David Okafor',
     handle: 'App Store',
     provider: 'Embrace',
     rating: 5,
     text: 'Love the diminishing deductible \u2014 every year I stay claim-free it drops. Coverage for my senior dog has been comprehensive.',
   },
   {
-    name: 'Anna K.',
+    name: 'Anna Kowalski',
     handle: 'Trustpilot',
     provider: 'Spot',
     rating: 5,
     text: 'No upper age limit was the deciding factor for my 11-year-old lab. Customizable annual limits let me keep the premium reasonable.',
   },
   {
-    name: 'Carlos M.',
+    name: 'Carlos Mendez',
     handle: 'ConsumerAffairs',
     provider: 'Pets Best',
     rating: 4,
     text: 'Affordable and the wellness add-on covered routine vet visits. Reimbursement took a little longer than expected but it came through.',
   },
   {
-    name: 'Rachel B.',
+    name: 'Rachel Goldberg',
     handle: 'Reddit',
     provider: 'Pumpkin',
     rating: 5,
     text: 'One straightforward plan, no confusing tiers. 90% reimbursement and they cover exam fees, which a lot of competitors don\u2019t.',
   },
   {
-    name: 'Tom H.',
+    name: 'Tom Hartley',
     handle: 'App Store',
     provider: 'Fetch',
     rating: 4,
     text: 'Comprehensive coverage \u2014 they even covered dental and behavioral therapy. A bit pricier but the breadth of coverage is worth it.',
   },
   {
-    name: 'Sofia G.',
+    name: 'Sofia Greco',
     handle: 'Trustpilot',
     provider: 'Figo',
     rating: 5,
     text: 'The pet cloud app keeps all my records in one place. Claims were smooth and the 100% reimbursement option is rare to find.',
   },
   {
-    name: 'Brian W.',
+    name: 'Brian Walsh',
     handle: 'ConsumerAffairs',
     provider: 'ASPCA',
     rating: 4,
@@ -132,7 +132,21 @@ export function ReviewsMarquee() {
   const track = [...REVIEWS, ...REVIEWS]
 
   return (
-    <section className="overflow-hidden bg-zinc-50 dark:bg-zinc-900 py-20">
+    /* This light section is pulled up over the blue Pricing section above it and
+       given rounded top corners, an upward depth shadow (so the blue appears to
+       recede behind it) and a lit top "lip" — making it read as a raised shelf in
+       front of the blue. overflow-x-clip keeps the marquee from causing horizontal
+       scroll while still allowing the floating CTA to overflow the top edge. */
+    <section className="relative z-10 -mt-16 overflow-x-clip rounded-t-[2.5rem] bg-zinc-50 dark:bg-zinc-800 pt-28 pb-20 shadow-[0_-18px_45px_-15px_rgba(2,6,23,0.55),inset_0_2px_0_0_rgba(255,255,255,0.9)] dark:shadow-[0_-18px_45px_-15px_rgba(0,0,0,0.65),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+      {/* Floating CTA straddling the shelf lip, glowing onto the blue above */}
+      <a
+        href="/quiz"
+        className="group absolute left-1/2 -top-7 z-20 -translate-x-1/2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-blue-600 px-8 py-4 text-base font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700 shadow-glow-blue hover:shadow-glow-blue-lg"
+      >
+        Find Your Match
+        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+      </a>
+
       <div className="mx-auto max-w-6xl px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white text-balance">
           What pet owners are saying

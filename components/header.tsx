@@ -94,7 +94,9 @@ export function Header() {
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="inline-flex items-center gap-1.5"
                 >
-                  Find Your Match
+                  {/* Compact "GO" on mobile so the CTA never overlaps the logo */}
+                  <span className="sm:hidden">GO</span>
+                  <span className="hidden sm:inline">Find Your Match</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 </motion.span>
               </button>
@@ -102,14 +104,18 @@ export function Header() {
               <Link
                 key="contact-us"
                 href="/contact"
-                className="inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
+                className="group inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
               >
                 <motion.span
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="inline-flex items-center gap-1.5"
                 >
-                  Contact Us
+                  {/* Compact "GO" on mobile so the CTA never overlaps the logo */}
+                  <span className="sm:hidden">GO</span>
+                  <span className="hidden sm:inline">Contact Us</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:hidden transition-transform group-hover:translate-x-0.5" />
                 </motion.span>
               </Link>
             )}

@@ -19,6 +19,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setTheme(stored)
       document.documentElement.classList.toggle('dark', stored === 'dark')
+      return
+    }
+    // No saved preference: default to dark mode on mobile devices, light on larger
+    // screens. Uses a viewport width check so the page opens dark on phones.
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+    if (isMobile) {
+      setTheme('dark')
+      document.documentElement.classList.toggle('dark', true)
     }
   }, [])
 

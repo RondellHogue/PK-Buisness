@@ -47,7 +47,7 @@ export function HowWeEvaluate() {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-2 gap-4 sm:gap-5">
           {criteria.map((c, i) => (
             <motion.div
               key={c.title}
@@ -55,12 +55,12 @@ export function HowWeEvaluate() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6"
+              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6"
             >
-              <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center mb-4">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center mb-3 sm:mb-4">
                 <c.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">{c.title}</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-white mb-2">{c.title}</h3>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{c.text}</p>
             </motion.div>
           ))}

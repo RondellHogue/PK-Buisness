@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, useTransform, useSpring, useMotionTemplate } from 'framer-motion'
 
 const treatmentCosts = [
   { condition: 'Cancer Treatment', cost: '$5,000 - $10,000', bar: 100 },

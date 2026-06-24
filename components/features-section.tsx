@@ -51,8 +51,8 @@ export function FeaturesSection() {
           </motion.h2>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Features Grid — two-up on mobile, four-up on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}

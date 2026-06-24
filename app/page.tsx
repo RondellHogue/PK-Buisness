@@ -19,8 +19,8 @@ export default function HomePage() {
       <Header />
       <HeroSection />
       <PricingSection />
-      <LearnMoreSection />
       <ReviewsMarquee />
+      <LearnMoreSection />
       <HowWeEvaluate />
       <HowItWorks />
       <FeaturesSection />

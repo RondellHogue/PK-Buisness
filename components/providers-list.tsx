@@ -81,8 +81,6 @@ export function ProvidersList() {
 
   return (
     <div className="space-y-16">
-      <ComparisonTable providers={providers} />
-
       <div>
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">In-depth provider reviews</h2>
@@ -91,14 +89,24 @@ export function ProvidersList() {
             drawbacks included.
           </p>
         </div>
-        <div className="space-y-5">
+        {/* Two-up tiles on mobile to fit more on screen; single column on desktop.
+            An opened card spans the full row so its review stays readable. */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-1 lg:gap-5">
           {providers.map((provider, index) => (
             <ProviderCard key={provider.id} provider={provider} index={index} />
           ))}
         </div>
       </div>
+
+      <ComparisonTable providers={providers} />
     </div>
   )
+}
+
+/* Pull the first number out of a string like "$25", "70-90%", "14 days". */
+function leadingNum(s?: string | null) {
+  const m = s?.match(/\d+(\.\d+)?/)
+  return m ? parseFloat(m[0]) : null
 }
 
 /* ----------------------------- Comparison table ---------------------------- */
@@ -149,8 +157,12 @@ function ComparisonTable({ providers }: { providers: Provider[] }) {
                       {p.name}
                     </span>
                   </th>
-                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.monthly_cost || '—'}</td>
-                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.reimbursement || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">
+                    <CellBar value={p.monthly_cost} pct={pctOf(leadingNum(p.monthly_cost), 80)} color={p.brand_color} />
+                  </td>
+                  <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">
+                    <CellBar value={p.reimbursement} pct={leadingNum(p.reimbursement)} color={p.brand_color} />
+                  </td>
                   <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.deductible || '—'}</td>
                   <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.wait_period || '—'}</td>
                   <td className="px-4 py-4 text-zinc-600 dark:text-zinc-300">{p.coverage_limit || '—'}</td>
@@ -178,22 +190,24 @@ function ProviderCard({ provider, index }: { provider: Provider; index: number }
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.4 }}
-      className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+      className={`relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 ${
+        open ? 'col-span-2 lg:col-span-1' : ''
+      }`}
     >
       <span aria-hidden className="absolute left-0 top-0 h-full w-1.5" style={{ backgroundColor: provider.brand_color }} />
 
-      <div className="flex flex-col gap-6 p-6 pl-8 lg:flex-row lg:items-center lg:gap-8">
+      <div className="flex flex-col gap-4 p-4 pl-5 sm:gap-6 sm:p-6 sm:pl-8 lg:flex-row lg:items-center lg:gap-8">
         {/* Logo + name */}
-        <div className="flex items-center gap-4 lg:w-56 lg:shrink-0">
+        <div className="flex items-center gap-3 sm:gap-4 lg:w-56 lg:shrink-0">
           {provider.logo_url ? (
             <img
               src={provider.logo_url || '/placeholder.svg'}
               alt={`${provider.name} logo`}
-              className="h-16 w-16 shrink-0 rounded-xl object-contain bg-white"
+              className="h-12 w-12 shrink-0 rounded-xl object-contain bg-white sm:h-16 sm:w-16"
             />
           ) : (
             <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
               style={{ backgroundColor: provider.brand_color }}
             >
               {provider.name.charAt(0)}
@@ -209,22 +223,23 @@ function ProviderCard({ provider, index }: { provider: Provider; index: number }
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
-          <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} />
+        {/* Stats — numeric values are paired with a small visual bar so the figure
+            reads at a glance rather than as a bare number. */}
+        <div className="grid flex-1 grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5">
+          <Stat icon={Wallet} label="Monthly" value={provider.monthly_cost} pct={pctOf(leadingNum(provider.monthly_cost), 80)} barColor={provider.brand_color} />
           <Stat icon={ShieldCheck} label="Deductible" value={provider.deductible} />
-          <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} />
+          <Stat icon={Percent} label="Reimburse" value={provider.reimbursement} pct={leadingNum(provider.reimbursement)} barColor={provider.brand_color} />
           <Stat icon={Clock} label="Wait Period" value={provider.wait_period} />
           <Stat icon={InfinityIcon} label="Annual Limit" value={provider.coverage_limit} />
         </div>
 
-        {/* CTA */}
-        <div className="flex items-center gap-3 lg:w-auto lg:shrink-0 lg:flex-col lg:items-end">
+        {/* CTA — stacked full-width buttons on mobile so they fit a half-width tile */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center lg:w-auto lg:shrink-0 lg:flex-col lg:items-end">
           <a
             href={provider.url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
             style={{ backgroundColor: provider.brand_color }}
           >
             Visit Site
@@ -233,7 +248,7 @@ function ProviderCard({ provider, index }: { provider: Provider; index: number }
           {review && (
             <button
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
               aria-expanded={open}
             >
               {open ? 'Hide review' : 'Read review'}
@@ -378,14 +393,38 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
   )
 }
 
+/* Normalize a raw number to a 0-100 percentage against a max scale. */
+function pctOf(n: number | null, max: number) {
+  if (n == null) return null
+  return Math.max(6, Math.min(100, (n / max) * 100))
+}
+
+/* A comparison-table cell that shows the value plus a small proportional bar. */
+function CellBar({ value, pct, color }: { value?: string; pct?: number | null; color?: string }) {
+  return (
+    <div className="min-w-[88px]">
+      <span className="font-medium text-zinc-900 dark:text-white">{value || '—'}</span>
+      {pct != null && (
+        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+          <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color || '#2563eb' }} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Stat({
   icon: Icon,
   label,
   value,
+  pct,
+  barColor,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   value: string
+  pct?: number | null
+  barColor?: string
 }) {
   return (
     <div className="min-w-0">
@@ -393,7 +432,15 @@ function Stat({
         <Icon className="h-3.5 w-3.5" />
         {label}
       </div>
-      <div className="mt-1 truncate text-sm font-semibold text-zinc-900 dark:text-white">{value || 'N/A'}</div>
+      <div className="mt-1 truncate text-sm sm:text-base font-semibold text-zinc-900 dark:text-white">{value || 'N/A'}</div>
+      {pct != null && (
+        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+          <div
+            className="h-full rounded-full"
+            style={{ width: `${pct}%`, backgroundColor: barColor || '#2563eb' }}
+          />
+        </div>
+      )}
     </div>
   )
 }
