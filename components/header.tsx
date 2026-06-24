@@ -94,7 +94,7 @@ export function Header() {
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="inline-flex items-center gap-1.5"
                 >
-                  Start Saving
+                  Find Your Match
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 </motion.span>
               </button>

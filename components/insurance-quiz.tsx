@@ -159,6 +159,7 @@ function SliderQuestion({
   onConfirm: (index: number) => void
 }) {
   const [value, setValue] = useState(initial ?? Math.floor((options.length - 1) / 2))
+  const pct = options.length > 1 ? (value / (options.length - 1)) * 100 : 0
 
   return (
     <div className="mt-8">
@@ -172,7 +173,8 @@ function SliderQuestion({
         step={1}
         value={value}
         onChange={(e) => setValue(parseInt(e.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-200 dark:bg-zinc-700 accent-blue-600"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full accent-blue-600"
+        style={{ background: `linear-gradient(to right, #2563eb ${pct}%, #d4d4d8 ${pct}%)` }}
         aria-label="Select an option"
       />
       <div className="mt-3 flex justify-between">

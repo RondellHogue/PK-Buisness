@@ -71,14 +71,14 @@ export function HeroSection() {
             onClick={() => setQuoterOpen(true)}
             className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-glow-blue hover:shadow-glow-blue-lg"
           >
-            Start Saving
+            Find Your Match
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
           <Link
             href="/providers"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
-            View Providers
+            Compare Providers
           </Link>
         </motion.div>
       </div>

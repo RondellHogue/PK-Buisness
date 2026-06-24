@@ -54,6 +54,8 @@ function QuizSlider({
   onChange: (index: number) => void
 }) {
   const current = options[value]
+  // Percentage of the track that is "filled" up to the selected value
+  const pct = options.length > 1 ? (value / (options.length - 1)) * 100 : 0
   return (
     <div className="mt-4">
       <div className="mb-8 text-center">
@@ -69,7 +71,8 @@ function QuizSlider({
         step={1}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-200 dark:bg-zinc-700 accent-blue-600"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full accent-blue-600"
+        style={{ background: `linear-gradient(to right, #2563eb ${pct}%, #d4d4d8 ${pct}%)` }}
         aria-label="Select an option"
       />
       <div className="mt-3 flex justify-between">
@@ -215,9 +218,16 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+            // Step 1 with only the 3 starter tiles uses a compact box; choosing
+            // "More" (or any later step) expands it to fit all options.
+            maxWidth: step === 1 && !showAllPets ? 440 : 672,
+          }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
+          transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+          className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -245,7 +255,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               <div>
                 <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">What type of pets do you have?</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Select all that apply</p>
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                <div className={`grid gap-3 ${showAllPets ? 'grid-cols-3 sm:grid-cols-5' : 'grid-cols-3'}`}>
                   {(showAllPets ? petTypes : petTypes.slice(0, 2)).map((pet) => {
                     const selected = selectedPets.includes(pet.id)
                     return (
@@ -310,7 +320,8 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                           max="10"
                           value={count}
                           onChange={(e) => setPetCounts((c) => ({ ...c, [id]: parseInt(e.target.value) }))}
-                          className="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                          className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                          style={{ background: `linear-gradient(to right, #2563eb ${((count - 1) / 9) * 100}%, #d4d4d8 ${((count - 1) / 9) * 100}%)` }}
                         />
                         <div className="flex justify-between mt-1 text-xs text-zinc-400">
                           <span>1</span>
