@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, useSpring, useMotionTemplate } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 
 const treatmentCosts = [
   { condition: 'Cancer Treatment', cost: '$5,000 - $10,000', bar: 100 },
@@ -22,12 +22,47 @@ const insuranceCosts = [
 ]
 
 export function PricingSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Mobile-only: the reveal effect should not run on desktop.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // Track this section as it scrolls into view. progress 0 = section top is at the
+  // bottom of the viewport (entering); progress 1 = section top reaches the upper
+  // third (fully revealed).
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'start 30%'],
+  })
+
+  // Translate the whole blue sheet down at first (revealing more of the pet image
+  // above) then up to its natural position as the user scrolls — making the blue
+  // appear to expand upward over the pets. Using translateY keeps it GPU-composited
+  // (no layout shift, smooth 60fps). A spring softens the motion.
+  const yRaw = useTransform(scrollYProgress, [0, 1], [96, 0])
+  const ySpring = useSpring(yRaw, { stiffness: 120, damping: 22, mass: 0.3 })
+
   return (
-    <section
+    <motion.section
+      ref={sectionRef}
       id="pricing"
       data-paw-region="gradient"
-      className="relative z-10 -mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)]"
+      style={{ y: isMobile ? ySpring : 0 }}
+      className="relative z-10 -mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)] will-change-transform"
     >
+      {/* iOS-style pull-tab indicator centered at the top of the blue sheet (mobile only) */}
+      <span
+        aria-hidden="true"
+        className="md:hidden absolute left-1/2 top-3 z-20 h-1.5 w-10 -translate-x-1/2 rounded-full bg-white/30"
+      />
+
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -113,6 +148,6 @@ export function PricingSection() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }
