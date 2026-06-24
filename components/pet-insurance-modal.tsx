@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight, MoreHorizontal, BarChart3 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 const petTypes = [
@@ -46,6 +47,7 @@ interface PetInsuranceModalProps {
 
 export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   const [step, setStep] = useState(1)
+  const [showAllPets, setShowAllPets] = useState(false)
   const [selectedPets, setSelectedPets] = useState<string[]>([])
   const [petCounts, setPetCounts] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(false)
@@ -126,6 +128,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
     timers.current.forEach((t) => clearTimeout(t))
     timers.current = []
     setStep(1)
+    setShowAllPets(false)
     setSelectedPets([])
     setPetCounts({})
     setLoading(false)
@@ -178,7 +181,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                 <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">What type of pets do you have?</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Select all that apply</p>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                  {petTypes.map((pet) => {
+                  {(showAllPets ? petTypes : petTypes.slice(0, 2)).map((pet) => {
                     const selected = selectedPets.includes(pet.id)
                     return (
                       <button
@@ -201,6 +204,16 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                       </button>
                     )
                   })}
+                  {/* "More" tile reveals the rest of the pet types when clicked */}
+                  {!showAllPets && (
+                    <button
+                      onClick={() => setShowAllPets(true)}
+                      className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 transition-all hover:border-blue-400 hover:text-blue-600"
+                    >
+                      <MoreHorizontal className="w-7 h-7 mb-2" />
+                      <span className="text-sm font-medium">More</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -326,6 +339,14 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                     </motion.a>
                   ))}
                 </div>
+                <Link
+                  href="/providers"
+                  onClick={handleClose}
+                  className="mt-5 flex items-center justify-center gap-2 w-full rounded-full border border-zinc-200 dark:border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-700 dark:text-zinc-200 transition-colors hover:border-blue-500 hover:text-blue-600"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Compare full stats for all providers
+                </Link>
               </div>
             )}
           </div>

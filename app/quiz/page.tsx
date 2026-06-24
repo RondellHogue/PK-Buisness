@@ -23,7 +23,9 @@ export default function QuizPage() {
             required, and we show you exactly why each one is recommended.
           </p>
         </section>
-        <InsuranceQuiz />
+        <section className="px-6 pb-40 md:pb-56">
+          <InsuranceQuiz />
+        </section>
       </main>
       <Footer />
     </div>

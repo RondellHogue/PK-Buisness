@@ -20,6 +20,8 @@ interface Provider {
 // short reason fragment shown in the result. Scoring is transparent on purpose.
 interface Option {
   label: string
+  // Short label used for slider tick marks
+  short?: string
   boosts: Record<string, number>
   reason?: string
 }
@@ -27,6 +29,8 @@ interface Option {
 interface Question {
   id: string
   prompt: string
+  // 'cards' (default) renders tappable option cards; 'slider' renders a range slider
+  type?: 'cards' | 'slider'
   options: Option[]
 }
 
@@ -43,19 +47,23 @@ const QUESTIONS: Question[] = [
   {
     id: 'age',
     prompt: 'How old is your pet?',
+    type: 'slider',
     options: [
       {
         label: 'Young (puppy or kitten)',
+        short: 'Young',
         boosts: { 'healthy paws': 2, lemonade: 2, 'pets best': 1 },
         reason: 'is competitively priced for young, healthy pets',
       },
       {
         label: 'Adult',
+        short: 'Adult',
         boosts: { embrace: 1, spot: 1, figo: 1 },
         reason: 'balances price and coverage well for adult pets',
       },
       {
         label: 'Senior',
+        short: 'Senior',
         boosts: { spot: 2, pumpkin: 2, aspca: 2, embrace: 1 },
         reason: 'enrolls older pets without an upper age limit',
       },
@@ -90,19 +98,23 @@ const QUESTIONS: Question[] = [
   {
     id: 'budget',
     prompt: 'What is your monthly budget?',
+    type: 'slider',
     options: [
       {
         label: 'Tight — keep it low',
+        short: 'Tight',
         boosts: { lemonade: 2, 'pets best': 2, aspca: 1 },
         reason: 'fits a lower monthly budget',
       },
       {
         label: 'Moderate — value matters',
+        short: 'Moderate',
         boosts: { spot: 2, embrace: 2, figo: 1 },
         reason: 'offers strong mid-range value',
       },
       {
         label: 'Flexible — I want the best plan',
+        short: 'Flexible',
         boosts: { trupanion: 2, fetch: 2, pumpkin: 1 },
         reason: 'justifies a higher premium with its coverage',
       },
@@ -135,6 +147,57 @@ const QUESTIONS: Question[] = [
     ],
   },
 ]
+
+// Slider-based question: pick along an ordered scale, then confirm to advance.
+function SliderQuestion({
+  options,
+  initial,
+  onConfirm,
+}: {
+  options: Option[]
+  initial: number | null
+  onConfirm: (index: number) => void
+}) {
+  const [value, setValue] = useState(initial ?? Math.floor((options.length - 1) / 2))
+
+  return (
+    <div className="mt-8">
+      <div className="mb-8 text-center">
+        <span className="text-xl md:text-2xl font-semibold text-blue-600">{options[value].label}</span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={options.length - 1}
+        step={1}
+        value={value}
+        onChange={(e) => setValue(parseInt(e.target.value))}
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-200 dark:bg-zinc-700 accent-blue-600"
+        aria-label="Select an option"
+      />
+      <div className="mt-3 flex justify-between">
+        {options.map((o, i) => (
+          <button
+            key={o.label}
+            type="button"
+            onClick={() => setValue(i)}
+            className={`text-xs font-medium transition-colors ${
+              i === value ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+            }`}
+          >
+            {o.short ?? o.label}
+          </button>
+        ))}
+      </div>
+      <button
+        onClick={() => onConfirm(value)}
+        className="mt-10 inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+      >
+        Continue <ArrowRight className="h-4 w-4" />
+      </button>
+    </div>
+  )
+}
 
 export function InsuranceQuiz() {
   const [providers, setProviders] = useState<Provider[]>([])
@@ -225,18 +288,26 @@ export function InsuranceQuiz() {
             <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white text-balance">
               {QUESTIONS[step].prompt}
             </h2>
-            <div className="mt-6 space-y-3">
-              {QUESTIONS[step].options.map((opt, i) => (
-                <button
-                  key={opt.label}
-                  onClick={() => choose(i)}
-                  className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-5 py-4 text-left text-zinc-800 dark:text-zinc-100 transition-all hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/20"
-                >
-                  <span className="font-medium">{opt.label}</span>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-zinc-300 transition-all group-hover:translate-x-1 group-hover:text-blue-600" />
-                </button>
-              ))}
-            </div>
+            {QUESTIONS[step].type === 'slider' ? (
+              <SliderQuestion
+                options={QUESTIONS[step].options}
+                initial={answers[step]}
+                onConfirm={(i) => choose(i)}
+              />
+            ) : (
+              <div className="mt-6 space-y-3">
+                {QUESTIONS[step].options.map((opt, i) => (
+                  <button
+                    key={opt.label}
+                    onClick={() => choose(i)}
+                    className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-5 py-4 text-left text-zinc-800 dark:text-zinc-100 transition-all hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/20"
+                  >
+                    <span className="font-medium">{opt.label}</span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-zinc-300 transition-all group-hover:translate-x-1 group-hover:text-blue-600" />
+                  </button>
+                ))}
+              </div>
+            )}
             {step > 0 && (
               <button
                 onClick={() => setStep(step - 1)}
@@ -309,7 +380,7 @@ export function InsuranceQuiz() {
                 onClick={reset}
                 className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800"
               >
-                <RotateCcw className="h-4 w-4" /> Retake quiz
+                <RotateCcw className="h-4 w-4" /> Redo
               </button>
               <Link
                 href="/providers"

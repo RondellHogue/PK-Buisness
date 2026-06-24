@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X, ArrowRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { footerLinks } from '@/components/footer'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -27,13 +28,12 @@ export function Header() {
     return () => observer.disconnect()
   }, [])
 
-  const navigation = [
-    { name: 'Pet Insurance', href: '/providers' },
-    { name: 'Find Your Match', href: '/quiz' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'How We Review', href: '/methodology' },
-    { name: 'FAQ', href: '/faq' },
+  // The hamburger menu surfaces every footer link, grouped into sections.
+  const menuGroups = [
+    { title: 'Resources', links: footerLinks.resources },
+    { title: 'Company', links: footerLinks.company },
+    { title: 'Trust', links: footerLinks.trust },
+    { title: 'Legal', links: footerLinks.legal },
   ]
 
   return (
@@ -127,27 +127,35 @@ export function Header() {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden -mx-6"
             >
-              <div className="px-6 py-4 border-t border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150">
-                <nav className="flex flex-col gap-1">
-                  {navigation.map((item, i) => (
+              <div className="px-6 py-5 border-t border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150">
+                <nav className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+                  {menuGroups.map((group, gi) => (
                     <motion.div
-                      key={item.name}
+                      key={group.title}
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
                       transition={{
                         duration: 0.25,
                         ease: 'easeOut',
-                        delay: menuOpen ? 0.08 + i * 0.05 : 0,
+                        delay: menuOpen ? 0.08 + gi * 0.05 : 0,
                       }}
                     >
-                      <Link
-                        href={item.href}
-                        onClick={handleNavClick}
-                        className="block rounded-lg px-3 py-2.5 text-base font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
-                      >
-                        {item.name}
-                      </Link>
+                      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                        {group.title}
+                      </h3>
+                      <div className="flex flex-col gap-0.5">
+                        {group.links.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            onClick={handleNavClick}
+                            className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
                     </motion.div>
                   ))}
                 </nav>

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-const footerLinks = {
+export const footerLinks = {
   resources: [
     { name: 'Insurance Providers', href: '/providers' },
     { name: 'Find Your Match', href: '/quiz' },
