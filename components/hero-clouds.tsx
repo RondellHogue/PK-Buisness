@@ -7,22 +7,21 @@ type Cloud = {
   /** rendered width in px */
   width: number
   opacity: number
-  /** seconds for one full right-to-left pass */
+  /** seconds for one full left-to-right pass */
   duration: number
   /** negative delay so clouds are already mid-flight on load */
   delay: number
 }
 
-// A small, layered set of clouds. Varying size/opacity/speed creates a subtle sense
-// of depth as they drift across the blue. Kept in the upper half of the panel so they
-// read as "sky" behind the pets and the Vet Clinic line-art.
+// A single high line of clouds drifting left-to-right. They sit near the top of the
+// blue panel — above the cat stand and the right-hand house roof — so they read as a
+// distant sky band. Varying size/opacity/speed still gives a layered depth feel.
 const CLOUDS: Cloud[] = [
-  { src: '/images/cloud-2.png', top: '8%', width: 190, opacity: 0.5, duration: 75, delay: -5 },
-  { src: '/images/cloud-1.png', top: '22%', width: 120, opacity: 0.32, duration: 105, delay: -40 },
-  { src: '/images/cloud-1.png', top: '4%', width: 150, opacity: 0.42, duration: 90, delay: -68 },
-  { src: '/images/cloud-2.png', top: '34%', width: 95, opacity: 0.25, duration: 120, delay: -20 },
-  { src: '/images/cloud-1.png', top: '16%', width: 170, opacity: 0.45, duration: 82, delay: -55 },
-  { src: '/images/cloud-2.png', top: '40%', width: 110, opacity: 0.28, duration: 110, delay: -90 },
+  { src: '/images/cloud-2.png', top: '10%', width: 190, opacity: 0.5, duration: 75, delay: -5 },
+  { src: '/images/cloud-1.png', top: '16%', width: 120, opacity: 0.3, duration: 110, delay: -46 },
+  { src: '/images/cloud-1.png', top: '7%', width: 150, opacity: 0.42, duration: 92, delay: -70 },
+  { src: '/images/cloud-2.png', top: '19%', width: 95, opacity: 0.24, duration: 125, delay: -22 },
+  { src: '/images/cloud-1.png', top: '12%', width: 168, opacity: 0.44, duration: 84, delay: -58 },
 ]
 
 export function HeroClouds() {
@@ -45,7 +44,9 @@ export function HeroClouds() {
             width={430}
             height={150}
             className="h-auto select-none"
-            style={{ width: cloud.width }}
+            // Invert the white cloud art into the same darker navy tone as the
+            // Vet Clinic line work so it recedes into the blue panel.
+            style={{ width: cloud.width, filter: 'invert(1) brightness(0.7)' }}
           />
         </div>
       ))}
