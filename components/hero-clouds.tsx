@@ -95,7 +95,12 @@ export function HeroClouds() {
     }
     raf = requestAnimationFrame(frame)
 
-    const onResize = () => initPositions()
+    // Only re-initialize when the WIDTH changes. Mobile browsers fire `resize`
+    // constantly while scrolling/touching (the address bar shows/hides, changing
+    // viewport height), which would otherwise reset the clouds on every movement.
+    const onResize = () => {
+      if (container.clientWidth !== width) initPositions()
+    }
     window.addEventListener('resize', onResize)
 
     return () => {
