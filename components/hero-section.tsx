@@ -121,7 +121,7 @@ export function HeroSection() {
             and faded upward so the tops of the buildings dissolve into the panel. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex justify-center"
+          className="pointer-events-none absolute inset-x-0 bottom-10 md:bottom-0 z-[1] flex justify-center"
         >
           <Image
             src="/images/pet-scene-lineart.png"

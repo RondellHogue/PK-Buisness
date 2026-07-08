@@ -99,7 +99,7 @@ export function PetIconPattern() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden blur-[2px]"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden blur-[1px] md:blur-[2px]"
       style={{
         opacity: scrollFade,
         transition: 'opacity 0.2s linear',
@@ -124,8 +124,9 @@ export function PetIconPattern() {
         const Icon = it.Icon
         // On mobile, thin the field out and make icons smaller/fainter.
         if (isMobile && it.id % 2 === 0) return null
-        const size = isMobile ? Math.round(it.size * 0.75) : it.size
-        const opacity = isMobile ? it.baseOpacity * 0.5 : it.baseOpacity
+        const size = isMobile ? Math.round(it.size * 0.85) : it.size
+        // Brighter and more visible on mobile (was faint at 0.3).
+        const opacity = isMobile ? 0.9 : it.baseOpacity
         return (
           <div
             key={it.id}

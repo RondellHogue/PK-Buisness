@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type CloudConfig = {
   src: string
@@ -28,6 +28,16 @@ const CLOUDS: CloudConfig[] = [
 export function HeroClouds() {
   const containerRef = useRef<HTMLDivElement>(null)
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Shrink clouds on mobile only.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   useEffect(() => {
     // Respect reduced-motion: render clouds statically, no animation loop.
@@ -112,8 +122,9 @@ export function HeroClouds() {
             height={150}
             className="h-auto select-none"
             // Invert the white cloud art into the same darker navy tone as the
-            // Vet Clinic line work so it recedes into the blue panel.
-            style={{ width: cloud.width, filter: 'invert(1) brightness(0.7)' }}
+            // Vet Clinic line work so it recedes into the blue panel. Clouds are
+            // scaled down to 60% on mobile only.
+            style={{ width: isMobile ? Math.round(cloud.width * 0.6) : cloud.width, filter: 'invert(1) brightness(0.7)' }}
           />
         </div>
       ))}
