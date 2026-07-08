@@ -37,14 +37,14 @@ export function HeroSection() {
 >
   <span className="whitespace-nowrap md:whitespace-normal">
     One{" "}
-    <span className="text-blue-600 dark:text-blue-400 font-extrabold">
-      Emergency Visit
+    <span className="font-extrabold" style={{ color: '#2f65ff' }}>
+      Emergency...
     </span>
   </span>{" "}
   <br className="md:hidden" />
   <span className="whitespace-nowrap md:whitespace-normal">
     Could Cost{" "}
-    <span className="text-blue-600 dark:text-blue-400 font-extrabold">
+    <span className="font-extrabold" style={{ color: '#1e64ff' }}>
       Thousands
     </span>
   </span>
