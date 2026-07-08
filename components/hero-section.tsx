@@ -35,14 +35,14 @@ export function HeroSection() {
   transition={{ duration: 0.6, delay: 0.1 }}
   className={`${outfit.className} mt-9 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
 >
-  <span className="whitespace-nowrap md:whitespace-normal">
+  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '39px' }}>
     One{" "}
     <span className="font-extrabold" style={{ color: '#2f65ff' }}>
       Emergency...
     </span>
   </span>{" "}
   <br className="md:hidden" />
-  <span className="whitespace-nowrap md:whitespace-normal">
+  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '39px' }}>
     Could Cost{" "}
     <span className="font-extrabold" style={{ color: '#1e64ff' }}>
       Thousands
