@@ -43,8 +43,8 @@ function buildPattern(): Deco[] {
     const left = side === 0 ? 1 + rand() * 18 : 81 + rand() * 18
     const size = 14 + Math.floor(rand() * 18)
     const Icon = ICONS[Math.floor(rand() * ICONS.length)]
-    // Slow, gentle rain: 18s - 34s to traverse the screen.
-    const duration = 18 + rand() * 16
+    // Slow, gentle rain: 30s - 58s to traverse the screen.
+    const duration = 30 + rand() * 28
     // Negative delay so the sky is already full of falling icons on first paint.
     const delay = -rand() * duration
     const rotate = -30 + rand() * 60
