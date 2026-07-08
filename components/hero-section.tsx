@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
+import { HeroClouds } from './hero-clouds'
 import { Fredoka } from 'next/font/google'
 
 const fredoka = Fredoka({
@@ -107,6 +108,11 @@ export function HeroSection() {
               'radial-gradient(55% 55% at 50% 45%, rgba(96,165,250,0.28) 0%, rgba(37,99,235,0) 65%)',
           }}
         />
+
+        {/* Drifting background clouds — sit at z-0 so they float in the blue only,
+            behind the white top cap (z-20), the Vet Clinic line-art (z-[1]) and the
+            pets (z-10). */}
+        <HeroClouds />
 
         {/* Pencil line-art pet scene (pet shop, cat tree, pets, houses) sitting on
             the blue behind the pets. Inverted + screen blend turns the dark sketch

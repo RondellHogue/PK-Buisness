@@ -112,6 +112,20 @@
       transform: translateX(-50%);
     }
   }
+
+  /* Background clouds drifting right-to-left across the hero's blue panel. Registered
+     here (like the marquee) so the keyframes are reliably emitted; per-cloud speed is
+     set via inline animation-duration and negative delays keep them mid-flight on load. */
+  --animate-cloud-drift: cloud-drift 80s linear infinite;
+
+  @keyframes cloud-drift {
+    from {
+      transform: translateX(115vw);
+    }
+    to {
+      transform: translateX(-30vw);
+    }
+  }
 }
 
 /* Lemonade-style soft glow + layered drop shadows */
