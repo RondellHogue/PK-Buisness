@@ -7,11 +7,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
 import { HeroClouds } from './hero-clouds'
-import { Fredoka } from 'next/font/google'
+import { Outfit } from 'next/font/google'
 
-const fredoka = Fredoka({
+const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
+  display: 'swap',
 })
 
 export function HeroSection() {
@@ -33,7 +33,7 @@ export function HeroSection() {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6, delay: 0.1 }}
-  className={`${fredoka.className} text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
+  className={`${outfit.className} text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
 >
   <span className="whitespace-nowrap md:whitespace-normal">
     One{" "}
@@ -55,7 +55,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-sm md:text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
+          className="mt-6 text-xs md:text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
           Don&apos;t wait for the costly vet bill to realize the value of pet insurance. Cover your furry family member today!
         </motion.p>

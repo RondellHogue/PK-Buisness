@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Inter, Space_Grotesk, Outfit } from 'next/font/google'
 import './globals.css'
 import { SettingsProvider } from '@/lib/settings-context'
 import { ThemeProvider } from '@/lib/theme-context'
@@ -13,6 +13,12 @@ const inter = Inter({
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const outfit = Outfit({
+  variable: '--font-outfit',
   subsets: ['latin'],
   display: 'swap',
 })
@@ -51,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable} ${outfit.variable} bg-background`}>
       <head>
         <meta name="impact-site-verification" value="95c87286-baec-4dfa-ae89-cf284a79b4f4" />
         {/* Apply the theme before paint to avoid a flash. Defaults to dark on first
