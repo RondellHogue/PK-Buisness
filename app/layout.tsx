@@ -1,5 +1,4 @@
 import { Analytics } from '@vercel/analytics/next'
-import Script from 'next/script'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
@@ -56,10 +55,15 @@ export default function RootLayout({
       <head>
         <meta name="impact-site-verification" value="95c87286-baec-4dfa-ae89-cf284a79b4f4" />
         {/* Apply the theme before paint to avoid a flash. Defaults to dark on first
-            visit (no stored preference) for all devices. */}
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}}catch(e){document.documentElement.classList.add('dark')}})();`}
-        </Script>
+            visit (no stored preference) for all devices. A plain inline script runs
+            synchronously in <head> before the body paints (next/script's
+            beforeInteractive is not reliable for this in the App Router). */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}}catch(e){document.documentElement.classList.add('dark')}})();`,
+          }}
+        />
       </head>
       <body className="font-sans antialiased bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
         <ThemeProvider>

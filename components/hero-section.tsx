@@ -128,7 +128,7 @@ export function HeroSection() {
             alt=""
             width={1520}
             height={1000}
-            className="w-full h-auto max-w-[1600px] select-none"
+            className="w-full h-auto select-none"
             style={{
               filter: 'invert(1) brightness(2.4) contrast(1.3)',
               mixBlendMode: 'screen',
