@@ -42,7 +42,7 @@ export function HeroSection() {
     </span>
   </span>{" "}
   <br className="md:hidden" />
-  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '36px', marginLeft: '-18px' }}>
+  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '36px' }}>
     Could Cost{" "}
     <span className="font-extrabold" style={{ color: '#1e64ff' }}>
       Thousands
