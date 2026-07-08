@@ -123,8 +123,8 @@ export function HeroClouds() {
             className="h-auto select-none"
             // Invert the white cloud art into the same darker navy tone as the
             // Vet Clinic line work so it recedes into the blue panel. Clouds are
-            // scaled down to 60% on mobile only.
-            style={{ width: isMobile ? Math.round(cloud.width * 0.6) : cloud.width, filter: 'invert(1) brightness(0.7)' }}
+            // scaled down to 40% on mobile only.
+            style={{ width: isMobile ? Math.round(cloud.width * 0.4) : cloud.width, filter: 'invert(1) brightness(0.7)' }}
           />
         </div>
       ))}
