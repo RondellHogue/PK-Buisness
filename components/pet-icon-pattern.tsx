@@ -34,10 +34,13 @@ type Deco = {
 function buildPattern(): Deco[] {
   const rand = mulberry32(20240611)
   const items: Deco[] = []
-  const count = 42
+  const count = 48
 
   for (let i = 0; i < count; i++) {
-    const left = rand() * 100
+    // Keep icons in two side gutters only (never behind the centered hero). Left
+    // gutter spans ~1-19%, right gutter ~81-99%.
+    const side = rand() < 0.5 ? 0 : 1
+    const left = side === 0 ? 1 + rand() * 18 : 81 + rand() * 18
     const size = 14 + Math.floor(rand() * 18)
     const Icon = ICONS[Math.floor(rand() * ICONS.length)]
     // Slow, gentle rain: 18s - 34s to traverse the screen.
@@ -97,7 +100,13 @@ export function PetIconPattern() {
     <div
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden blur-[2px]"
-      style={{ opacity: scrollFade, transition: 'opacity 0.2s linear' }}
+      style={{
+        opacity: scrollFade,
+        transition: 'opacity 0.2s linear',
+        // Denser at the top, tapering as it descends.
+        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, rgba(0,0,0,0.35) 55%, transparent 90%)',
+        maskImage: 'linear-gradient(to bottom, black 0%, rgba(0,0,0,0.35) 55%, transparent 90%)',
+      }}
     >
       {/* Keyframes for the slow rain: a vertical fall paired with a gentle
           horizontal sway on an inner wrapper for a natural drifting descent. */}

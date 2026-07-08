@@ -6,7 +6,6 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
-import { PetLineArt } from './pet-line-art'
 import { Fredoka } from 'next/font/google'
 
 const fredoka = Fredoka({
@@ -109,9 +108,30 @@ export function HeroSection() {
           }}
         />
 
-        {/* White line-art of pet items (dog house, cat bed, bird cage, etc.)
-            sitting behind the pets, Lemonade-style. */}
-        <PetLineArt />
+        {/* Pencil line-art pet scene (pet shop, cat tree, pets, houses) sitting on
+            the blue behind the pets. Inverted + screen blend turns the dark sketch
+            lines into soft white outlines and drops the white paper background out
+            entirely, so it blends seamlessly into the blue. Anchored to the bottom
+            and faded upward so the tops of the buildings dissolve into the panel. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex justify-center"
+        >
+          <Image
+            src="/images/pet-scene-lineart.png"
+            alt=""
+            width={1520}
+            height={1000}
+            className="w-full h-auto max-w-[1600px] select-none"
+            style={{
+              filter: 'invert(1) brightness(2.4) contrast(1.3)',
+              mixBlendMode: 'screen',
+              opacity: 0.45,
+              WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
+              maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
+            }}
+          />
+        </div>
 
         {/* Full-width pets image, raised so the animals fill most of the panel on
             landing. The background is already transparent so they sit directly on
