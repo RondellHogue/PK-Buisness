@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
+import { PetLineArt } from './pet-line-art'
 import { Fredoka } from 'next/font/google'
 
 const fredoka = Fredoka({
@@ -107,6 +108,10 @@ export function HeroSection() {
               'radial-gradient(55% 55% at 50% 45%, rgba(96,165,250,0.28) 0%, rgba(37,99,235,0) 65%)',
           }}
         />
+
+        {/* White line-art of pet items (dog house, cat bed, bird cage, etc.)
+            sitting behind the pets, Lemonade-style. */}
+        <PetLineArt />
 
         {/* Full-width pets image, raised so the animals fill most of the panel on
             landing. The background is already transparent so they sit directly on

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
 import { Dog, Cat, Bird, Rabbit, Fish, Turtle, PawPrint, Bone } from 'lucide-react'
 
 const ROYAL_BLUE = '#4169E1'
@@ -20,42 +19,37 @@ function mulberry32(seed: number) {
 
 type Deco = {
   id: number
-  side: 'left' | 'right'
-  top: number
-  offset: number
+  left: number // viewport percentage 0-100
   size: number
   Icon: (typeof ICONS)[number]
-  delay: number
-  duration: number
-  drift: number
+  duration: number // seconds to fall the full height
+  delay: number // negative so drops start mid-fall on load
+  rotate: number // starting rotation
+  spin: number // degrees of rotation over the fall
+  swayDur: number
+  swayDelay: number
   baseOpacity: number
-  rotate: number
 }
 
 function buildPattern(): Deco[] {
   const rand = mulberry32(20240611)
   const items: Deco[] = []
-  const count = 48
+  const count = 42
 
   for (let i = 0; i < count; i++) {
-    // Squaring the random value biases positions toward the top (0%),
-    // so icons are dense up top and sparse toward the bottom.
-    const top = Math.pow(rand(), 1.9) * 98
-    const side: 'left' | 'right' = i % 2 === 0 ? 'left' : 'right'
-    // Icons near the very top spread further inward to fill the white void
-    // beside the headline; lower icons stay tucked against the edges.
-    const maxInset = top < 24 ? 22 : 6
-    const offset = 0.5 + rand() * maxInset // % in from the screen edge
+    const left = rand() * 100
     const size = 14 + Math.floor(rand() * 18)
     const Icon = ICONS[Math.floor(rand() * ICONS.length)]
-    const delay = rand() * 6
-    const duration = 7 + rand() * 7
-    const drift = 14 + rand() * 22
-    // Each icon keeps a strong, consistent royal-blue presence; the gradual
-    // fade down the page is applied globally based on scroll position.
-    const baseOpacity = 0.7
-    const rotate = -22 + rand() * 44
-    items.push({ id: i, side, top, offset, size, Icon, delay, duration, drift, baseOpacity, rotate })
+    // Slow, gentle rain: 18s - 34s to traverse the screen.
+    const duration = 18 + rand() * 16
+    // Negative delay so the sky is already full of falling icons on first paint.
+    const delay = -rand() * duration
+    const rotate = -30 + rand() * 60
+    const spin = -25 + rand() * 50
+    const swayDur = 6 + rand() * 6
+    const swayDelay = -rand() * swayDur
+    const baseOpacity = 0.6
+    items.push({ id: i, left, size, Icon, duration, delay, rotate, spin, swayDur, swayDelay, baseOpacity })
   }
   return items
 }
@@ -105,36 +99,48 @@ export function PetIconPattern() {
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden blur-[2px]"
       style={{ opacity: scrollFade, transition: 'opacity 0.2s linear' }}
     >
+      {/* Keyframes for the slow rain: a vertical fall paired with a gentle
+          horizontal sway on an inner wrapper for a natural drifting descent. */}
+      <style>{`
+        @keyframes petfall {
+          0% { transform: translateY(-18vh) rotate(var(--rot)); }
+          100% { transform: translateY(118vh) rotate(calc(var(--rot) + var(--spin))); }
+        }
+        @keyframes petsway {
+          0%, 100% { transform: translateX(-10px); }
+          50% { transform: translateX(10px); }
+        }
+      `}</style>
       {items.map((it) => {
         const Icon = it.Icon
-        // On mobile, only keep edge-hugging icons and render them smaller and
-        // fainter so they stay subtle and unobtrusive behind the content.
-        if (isMobile && it.offset > 7) return null
-        const size = isMobile ? Math.round(it.size * 0.7) : it.size
+        // On mobile, thin the field out and make icons smaller/fainter.
+        if (isMobile && it.id % 2 === 0) return null
+        const size = isMobile ? Math.round(it.size * 0.75) : it.size
         const opacity = isMobile ? it.baseOpacity * 0.5 : it.baseOpacity
         return (
-          <motion.div
+          <div
             key={it.id}
-            className="absolute"
-            style={{
-              top: `${it.top}%`,
-              [it.side]: `${it.offset}%`,
-              color: ROYAL_BLUE,
-              opacity,
-            }}
-            animate={{
-              y: [0, it.drift, 0],
-              rotate: [it.rotate, it.rotate + 8, it.rotate],
-            }}
-            transition={{
-              duration: it.duration,
-              delay: it.delay,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-            }}
+            className="absolute top-0"
+            style={
+              {
+                left: `${it.left}%`,
+                '--rot': `${it.rotate}deg`,
+                '--spin': `${it.spin}deg`,
+                animation: `petfall ${it.duration}s linear ${it.delay}s infinite`,
+                willChange: 'transform',
+              } as React.CSSProperties
+            }
           >
-            <Icon style={{ width: size, height: size }} strokeWidth={1.8} />
-          </motion.div>
+            <div
+              style={{
+                animation: `petsway ${it.swayDur}s ease-in-out ${it.swayDelay}s infinite`,
+                color: ROYAL_BLUE,
+                opacity,
+              }}
+            >
+              <Icon style={{ width: size, height: size }} strokeWidth={1.8} />
+            </div>
+          </div>
         )
       })}
     </div>
