@@ -185,6 +185,115 @@ function QuizSlider({
   )
 }
 
+// Compact numeric slider (e.g. the per-pet "how many of each" count). Same fluid
+// pointer-driven behavior as QuizSlider: the knob follows the finger freely while
+// dragging and snaps to the nearest whole number on release. Large tap target.
+function NumberSlider({
+  min,
+  max,
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  min: number
+  max: number
+  value: number
+  onChange: (n: number) => void
+  ariaLabel?: string
+}) {
+  const span = max - min
+  const trackRef = useRef<HTMLDivElement>(null)
+  const draggingRef = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  const [dragPos, setDragPos] = useState<number | null>(null)
+
+  const pos = dragging && dragPos !== null ? dragPos : value
+  const pct = span > 0 ? ((pos - min) / span) * 100 : 0
+
+  const valFromClientX = (clientX: number) => {
+    const el = trackRef.current
+    if (!el) return min
+    const rect = el.getBoundingClientRect()
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    const clamped = Math.min(1, Math.max(0, ratio))
+    return min + clamped * span
+  }
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      /* capture is best-effort */
+    }
+    draggingRef.current = true
+    setDragging(true)
+    setDragPos(valFromClientX(e.clientX))
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    setDragPos(valFromClientX(e.clientX))
+  }
+
+  const endDrag = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    } catch {
+      /* pointer may already be released */
+    }
+    const snapped = Math.round(valFromClientX(e.clientX))
+    draggingRef.current = false
+    setDragging(false)
+    setDragPos(null)
+    if (snapped !== value) onChange(snapped)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      onChange(Math.max(min, value - 1))
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      onChange(Math.min(max, value + 1))
+    }
+  }
+
+  return (
+    <div
+      role="slider"
+      tabIndex={0}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={Math.round(pos)}
+      aria-label={ariaLabel}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onKeyDown={handleKeyDown}
+      className="relative flex cursor-pointer touch-none select-none items-center py-3 outline-none"
+    >
+      <div ref={trackRef} className="relative h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <div
+          className={`absolute inset-y-0 left-0 rounded-full bg-blue-600 ${
+            dragging ? '' : 'transition-[width] duration-200 ease-out'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+        <div
+          className={`absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-600 bg-white shadow-md dark:bg-zinc-900 ${
+            dragging ? 'scale-110' : 'transition-all duration-200 ease-out'
+          }`}
+          style={{ left: `${pct}%` }}
+        >
+          <span className="absolute -inset-3 rounded-full" aria-hidden="true" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const punnyPhrases = [
   'Fetching the best deals...',
   'Paws-ing to compare providers...',
@@ -433,14 +542,12 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                           </div>
                           <span className="text-2xl font-bold text-blue-600 tabular-nums w-8 text-right">{count}</span>
                         </div>
-                        <input
-                          type="range"
-                          min="1"
-                          max="10"
+                        <NumberSlider
+                          min={1}
+                          max={10}
                           value={count}
-                          onChange={(e) => setPetCounts((c) => ({ ...c, [id]: parseInt(e.target.value) }))}
-                          className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                          style={{ background: `linear-gradient(to right, #2563eb ${((count - 1) / 9) * 100}%, #d4d4d8 ${((count - 1) / 9) * 100}%)` }}
+                          onChange={(n) => setPetCounts((c) => ({ ...c, [id]: n }))}
+                          ariaLabel={`Number of ${pet.name}`}
                         />
                         <div className="flex justify-between mt-1 text-xs text-zinc-400">
                           <span>1</span>
