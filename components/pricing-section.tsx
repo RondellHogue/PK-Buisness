@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 
 const treatmentCosts = [
   { condition: 'Cancer Treatment', cost: '$5,000 - $10,000', bar: 100 },
@@ -21,20 +22,59 @@ const insuranceCosts = [
 ]
 
 export function PricingSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Mobile-only: the reveal effect should not run on desktop.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // Track this section as it scrolls into view. progress 0 = section top is at the
+  // bottom of the viewport (entering); progress 1 = section top reaches the upper
+  // third (fully revealed).
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'start 30%'],
+  })
+
+  // Translate the whole blue sheet down at first (revealing more of the pet image
+  // above) then up to its natural position as the user scrolls — making the blue
+  // appear to expand upward over the pets. Using translateY keeps it GPU-composited
+  // (no layout shift, smooth 60fps). A spring softens the motion.
+  const yRaw = useTransform(scrollYProgress, [0, 1], [48, 0])
+  const ySpring = useSpring(yRaw, { stiffness: 120, damping: 22, mass: 0.3 })
+
   return (
-    <section id="pricing" className="py-24 bg-white dark:bg-zinc-900">
-      <div className="max-w-6xl mx-auto px-6">
+    <motion.section
+      ref={sectionRef}
+      id="pricing"
+      data-paw-region="gradient"
+      style={{ y: isMobile ? ySpring : 0 }}
+      className="relative z-10 -mt-40 md:-mt-16 overflow-hidden rounded-t-[2.5rem] pt-20 pb-24 bg-blue-600 dark:bg-blue-700 shadow-[0_-20px_45px_-14px_rgba(2,6,23,0.5),inset_0_2px_0_0_rgba(255,255,255,0.28)] dark:shadow-[0_-20px_45px_-14px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.12)] will-change-transform"
+    >
+      {/* iOS-style pull-tab indicator centered at the top of the blue sheet (mobile only) */}
+      <span
+        aria-hidden="true"
+        className="md:hidden absolute left-1/2 top-3 z-20 h-1.5 w-10 -translate-x-1/2 rounded-full bg-white/30"
+      />
+
+      <div className="relative max-w-6xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wide uppercase">Pricing</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mt-3 mb-4">
+          <span className="block text-sm font-medium text-blue-100 tracking-wide uppercase">Pricing</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
             Understanding Pet Care Costs
           </h2>
-          <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
             See how much common treatments cost and how affordable insurance can be
           </p>
         </motion.div>
@@ -45,7 +85,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-zinc-50 dark:bg-zinc-800 rounded-2xl p-8"
+            className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-[0_30px_60px_-15px_rgba(2,6,23,0.45),0_12px_24px_-12px_rgba(2,6,23,0.35)] ring-1 ring-black/5 dark:ring-white/5"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Common Treatment Costs</h3>
             <div className="space-y-5">
@@ -77,7 +117,7 @@ export function PricingSection() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-zinc-50 dark:bg-zinc-800 rounded-2xl p-8"
+            className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-[0_30px_60px_-15px_rgba(2,6,23,0.45),0_12px_24px_-12px_rgba(2,6,23,0.35)] ring-1 ring-black/5 dark:ring-white/5"
           >
             <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Average Insurance Costs</h3>
             <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
@@ -108,6 +148,6 @@ export function PricingSection() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   )
 }

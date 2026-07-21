@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight, MoreHorizontal, BarChart3, ShieldCheck, PawPrint } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 const petTypes = [
@@ -28,6 +29,281 @@ interface RecommendedProvider {
   rating: number
 }
 
+// Age tiers, each with a representative age range shown to the user
+const ageOptions = [
+  { label: 'Young', range: '0–2 years' },
+  { label: 'Adult', range: '3–7 years' },
+  { label: 'Senior', range: '8+ years' },
+]
+
+// Budget tiers mirror the "Find Your Match" quiz wording
+const budgetOptions = [
+  { label: 'Tight', detail: 'Keep it low' },
+  { label: 'Moderate', detail: 'Value matters' },
+  { label: 'Flexible', detail: 'I want the best plan' },
+]
+
+// Reusable slider used for the age and budget questions.
+// Custom pointer-driven track: the knob follows the finger freely while dragging
+// (continuous, no mid-drag snapping) and snaps to the nearest option on release.
+function QuizSlider({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; range?: string; detail?: string }[]
+  value: number
+  onChange: (index: number) => void
+}) {
+  const maxIndex = options.length - 1
+  const trackRef = useRef<HTMLDivElement>(null)
+  // Ref mirrors the dragging flag so pointermove always sees the current value
+  // regardless of React's state-flush timing.
+  const draggingRef = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  // Continuous position (0..maxIndex) used only while dragging; otherwise we
+  // derive position from the committed `value`.
+  const [dragPos, setDragPos] = useState<number | null>(null)
+
+  const pos = dragging && dragPos !== null ? dragPos : value
+  const pct = maxIndex > 0 ? (pos / maxIndex) * 100 : 0
+  // The option shown/highlighted is always the nearest one to the knob.
+  const activeIndex = Math.round(pos)
+  const current = options[activeIndex]
+
+  const posFromClientX = (clientX: number) => {
+    const el = trackRef.current
+    if (!el) return 0
+    const rect = el.getBoundingClientRect()
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    const clamped = Math.min(1, Math.max(0, ratio))
+    return clamped * maxIndex
+  }
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      /* capture is best-effort; dragging still works without it */
+    }
+    draggingRef.current = true
+    setDragging(true)
+    setDragPos(posFromClientX(e.clientX))
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    setDragPos(posFromClientX(e.clientX))
+  }
+
+  const endDrag = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    } catch {
+      /* pointer may already be released */
+    }
+    // Snap to the nearest option on release.
+    const snapped = dragPos !== null ? Math.round(posFromClientX(e.clientX)) : value
+    draggingRef.current = false
+    setDragging(false)
+    setDragPos(null)
+    if (snapped !== value) onChange(snapped)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      onChange(Math.max(0, value - 1))
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      onChange(Math.min(maxIndex, value + 1))
+    }
+  }
+
+  return (
+    <div className="mt-4">
+      <div className="mb-8 text-center">
+        <span className="text-2xl font-semibold text-blue-600">{current.label}</span>
+        {(current.range || current.detail) && (
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{current.range ?? current.detail}</p>
+        )}
+      </div>
+
+      {/* Large touch surface (py-4 = ~64px tall hit area) so the knob is easy to grab */}
+      <div
+        role="slider"
+        tabIndex={0}
+        aria-valuemin={0}
+        aria-valuemax={maxIndex}
+        aria-valuenow={activeIndex}
+        aria-valuetext={current.label}
+        aria-label="Select an option"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onKeyDown={handleKeyDown}
+        className="relative flex cursor-pointer touch-none select-none items-center py-4 outline-none"
+      >
+        {/* Base track */}
+        <div ref={trackRef} className="relative h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+          {/* Filled portion */}
+          <div
+            className={`absolute inset-y-0 left-0 rounded-full bg-blue-600 ${
+              dragging ? '' : 'transition-[width] duration-200 ease-out'
+            }`}
+            style={{ width: `${pct}%` }}
+          />
+          {/* Knob — visually 24px, with a larger invisible tap ring around it */}
+          <div
+            className={`absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-600 bg-white shadow-md dark:bg-zinc-900 ${
+              dragging ? 'scale-110' : 'transition-all duration-200 ease-out'
+            }`}
+            style={{ left: `${pct}%` }}
+          >
+            <span className="absolute -inset-3 rounded-full" aria-hidden="true" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 flex justify-between">
+        {options.map((o, i) => (
+          <button
+            key={o.label}
+            type="button"
+            onClick={() => onChange(i)}
+            className={`text-xs font-medium transition-colors ${
+              i === activeIndex ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Compact numeric slider (e.g. the per-pet "how many of each" count). Same fluid
+// pointer-driven behavior as QuizSlider: the knob follows the finger freely while
+// dragging and snaps to the nearest whole number on release. Large tap target.
+function NumberSlider({
+  min,
+  max,
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  min: number
+  max: number
+  value: number
+  onChange: (n: number) => void
+  ariaLabel?: string
+}) {
+  const span = max - min
+  const trackRef = useRef<HTMLDivElement>(null)
+  const draggingRef = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  const [dragPos, setDragPos] = useState<number | null>(null)
+
+  const pos = dragging && dragPos !== null ? dragPos : value
+  const pct = span > 0 ? ((pos - min) / span) * 100 : 0
+
+  const valFromClientX = (clientX: number) => {
+    const el = trackRef.current
+    if (!el) return min
+    const rect = el.getBoundingClientRect()
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    const clamped = Math.min(1, Math.max(0, ratio))
+    return min + clamped * span
+  }
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      /* capture is best-effort */
+    }
+    draggingRef.current = true
+    setDragging(true)
+    const p = valFromClientX(e.clientX)
+    setDragPos(p)
+    // Report the live rounded value immediately so any external display
+    // (e.g. the blue count badge) reflects the knob position while dragging.
+    const rounded = Math.round(p)
+    if (rounded !== value) onChange(rounded)
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    const p = valFromClientX(e.clientX)
+    setDragPos(p)
+    // Emit the live rounded value on every move; the knob itself keeps following
+    // the finger continuously via dragPos, so it still feels free-flowing.
+    const rounded = Math.round(p)
+    if (rounded !== value) onChange(rounded)
+  }
+
+  const endDrag = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    } catch {
+      /* pointer may already be released */
+    }
+    const snapped = Math.round(valFromClientX(e.clientX))
+    draggingRef.current = false
+    setDragging(false)
+    setDragPos(null)
+    if (snapped !== value) onChange(snapped)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      onChange(Math.max(min, value - 1))
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      onChange(Math.min(max, value + 1))
+    }
+  }
+
+  return (
+    <div
+      role="slider"
+      tabIndex={0}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={Math.round(pos)}
+      aria-label={ariaLabel}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onKeyDown={handleKeyDown}
+      className="relative flex cursor-pointer touch-none select-none items-center py-3 outline-none"
+    >
+      <div ref={trackRef} className="relative h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <div
+          className={`absolute inset-y-0 left-0 rounded-full bg-blue-600 ${
+            dragging ? '' : 'transition-[width] duration-200 ease-out'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+        <div
+          className={`absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-600 bg-white shadow-md dark:bg-zinc-900 ${
+            dragging ? 'scale-110' : 'transition-all duration-200 ease-out'
+          }`}
+          style={{ left: `${pct}%` }}
+        >
+          <span className="absolute -inset-3 rounded-full" aria-hidden="true" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const punnyPhrases = [
   'Fetching the best deals...',
   'Paws-ing to compare providers...',
@@ -46,8 +322,11 @@ interface PetInsuranceModalProps {
 
 export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   const [step, setStep] = useState(1)
+  const [showAllPets, setShowAllPets] = useState(false)
   const [selectedPets, setSelectedPets] = useState<string[]>([])
   const [petCounts, setPetCounts] = useState<Record<string, number>>({})
+  const [ageIndex, setAgeIndex] = useState(1)
+  const [budgetIndex, setBudgetIndex] = useState(1)
   const [loading, setLoading] = useState(false)
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [allProviders, setAllProviders] = useState<RecommendedProvider[]>([])
@@ -84,11 +363,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
   }
 
   const handleNext = () => {
-    if (step === 1) {
-      setStep(2)
-    } else if (step === 2) {
-      setStep(3)
+    if (step === 4) {
+      setStep(5)
       runLoading()
+    } else if (step < 4) {
+      setStep(step + 1)
     }
   }
 
@@ -108,11 +387,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
       setPhraseIndex((i) => (i + 1) % punnyPhrases.length)
     }, 1000)
     timers.current.push(interval as unknown as ReturnType<typeof setTimeout>)
-    // Total load time: 3 seconds
+    // Total load time: 2.9 seconds
     const done = setTimeout(() => {
       clearInterval(interval)
       setLoading(false)
-    }, 3000)
+    }, 2900)
     timers.current.push(done)
   }
 
@@ -126,8 +405,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
     timers.current.forEach((t) => clearTimeout(t))
     timers.current = []
     setStep(1)
+    setShowAllPets(false)
     setSelectedPets([])
     setPetCounts({})
+    setAgeIndex(1)
+    setBudgetIndex(1)
     setLoading(false)
     setPhraseIndex(0)
     setRecommended([])
@@ -147,28 +429,62 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+            // Step 1 with only the 3 starter tiles uses a compact box; choosing
+            // "More" (or any later step) expands it to fit all options.
+            maxWidth: step === 1 && !showAllPets ? 440 : 672,
+          }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
+          transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+          className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800">
-            <div>
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Find Your Coverage</h2>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">Step {step} of 3</p>
+          {/* Header — themed blue banner with a protection badge */}
+          <div className="relative flex items-center justify-between gap-4 overflow-hidden bg-gradient-to-br from-blue-600 to-blue-500 p-6 text-white">
+            {/* Decorative watermark paw for a warm, on-theme feel */}
+            <PawPrint
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-3 -top-4 h-28 w-28 rotate-12 text-white/10"
+            />
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-sm">
+                <ShieldCheck className="h-6 w-6 text-white" />
+              </span>
+              <div>
+                <h2 className="text-xl font-semibold leading-tight">Find Your Coverage</h2>
+                <p className="text-sm text-blue-100">Personalized pet protection in a few taps</p>
+              </div>
             </div>
-            <button onClick={handleClose} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
-              <X className="w-5 h-5 text-zinc-500" />
+            <button
+              onClick={handleClose}
+              className="relative z-10 rounded-full p-2 transition hover:bg-white/15"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5 text-white" />
             </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="h-1 bg-zinc-100 dark:bg-zinc-800">
-            <div 
-              className="h-full bg-blue-600 transition-all duration-300"
-              style={{ width: `${(step / 3) * 100}%` }}
-            />
+          {/* Step indicator — segmented dots read cleaner than a raw progress bar */}
+          <div className="flex items-center justify-between gap-3 border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
+            <span className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+              Step {step} of 5
+            </span>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <span
+                  key={s}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    s === step
+                      ? 'w-6 bg-blue-600'
+                      : s < step
+                        ? 'w-1.5 bg-blue-600'
+                        : 'w-1.5 bg-zinc-200 dark:bg-zinc-700'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Content */}
@@ -177,8 +493,8 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               <div>
                 <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">What type of pets do you have?</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Select all that apply</p>
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                  {petTypes.map((pet) => {
+                <div className={`grid gap-3 ${showAllPets ? 'grid-cols-3 sm:grid-cols-5' : 'grid-cols-3'}`}>
+                  {(showAllPets ? petTypes : petTypes.slice(0, 2)).map((pet) => {
                     const selected = selectedPets.includes(pet.id)
                     return (
                       <button
@@ -201,6 +517,16 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                       </button>
                     )
                   })}
+                  {/* "More" tile reveals the rest of the pet types when clicked */}
+                  {!showAllPets && (
+                    <button
+                      onClick={() => setShowAllPets(true)}
+                      className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 transition-all hover:border-blue-400 hover:text-blue-600"
+                    >
+                      <MoreHorizontal className="w-7 h-7 mb-2" />
+                      <span className="text-sm font-medium">More</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -226,13 +552,12 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                           </div>
                           <span className="text-2xl font-bold text-blue-600 tabular-nums w-8 text-right">{count}</span>
                         </div>
-                        <input
-                          type="range"
-                          min="1"
-                          max="10"
+                        <NumberSlider
+                          min={1}
+                          max={10}
                           value={count}
-                          onChange={(e) => setPetCounts((c) => ({ ...c, [id]: parseInt(e.target.value) }))}
-                          className="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                          onChange={(n) => setPetCounts((c) => ({ ...c, [id]: n }))}
+                          ariaLabel={`Number of ${pet.name}`}
                         />
                         <div className="flex justify-between mt-1 text-xs text-zinc-400">
                           <span>1</span>
@@ -245,7 +570,23 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               </div>
             )}
 
-            {step === 3 && loading && (
+            {step === 3 && (
+              <div>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">How old is your pet?</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Slide to the life stage that fits best</p>
+                <QuizSlider options={ageOptions} value={ageIndex} onChange={setAgeIndex} />
+              </div>
+            )}
+
+            {step === 4 && (
+              <div>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">What is your monthly budget?</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Slide to set your comfort level</p>
+                <QuizSlider options={budgetOptions} value={budgetIndex} onChange={setBudgetIndex} />
+              </div>
+            )}
+
+            {step === 5 && loading && (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-6" />
                 <AnimatePresence mode="wait">
@@ -264,7 +605,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               </div>
             )}
 
-            {step === 3 && !loading && (
+            {step === 5 && !loading && (
               <div>
                 <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">Your Curated Matches</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Based on your selection, here are the best providers for you. Click any to visit their site.</p>
@@ -326,6 +667,14 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
                     </motion.a>
                   ))}
                 </div>
+                <Link
+                  href="/providers"
+                  onClick={handleClose}
+                  className="mt-5 flex items-center justify-center gap-2 w-full rounded-full border border-zinc-200 dark:border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-700 dark:text-zinc-200 transition-colors hover:border-blue-500 hover:text-blue-600"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Compare full stats for all providers
+                </Link>
               </div>
             )}
           </div>
@@ -340,7 +689,7 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
               >
                 Back
               </button>
-              {step < 3 ? (
+              {step < 5 ? (
                 <button
                   onClick={handleNext}
                   disabled={step === 1 && selectedPets.length === 0}

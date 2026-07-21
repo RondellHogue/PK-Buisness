@@ -1,37 +1,88 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
+import { HeroClouds } from './hero-clouds'
+import { Quicksand } from 'next/font/google'
+
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['500', '600', '700'],
+})
 
 export function HeroSection() {
   const [quoterOpen, setQuoterOpen] = useState(false)
 
+  // The header's morphing "Start Saving" button opens this same quoter modal.
+  useEffect(() => {
+    const open = () => setQuoterOpen(true)
+    window.addEventListener('open-quoter', open)
+    return () => window.removeEventListener('open-quoter', open)
+  }, [])
+
   return (
-    <section className="pt-32 pb-8 md:pt-40 md:pb-12 bg-gradient-to-b from-blue-50/50 to-white dark:from-zinc-800 dark:to-zinc-900">
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        {/* Headline */}
-        <motion.h1
+    <section className="relative pt-24 md:pt-28 bg-transparent">
+      {/* Top white area with headline, subtext and CTAs */}
+      <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-10">
+        {/* Headline — two forced lines, bold-yet-playful Baloo 2, with a subtle
+            constant "breathing" pulse to give the hero life. */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-white leading-[1.1] text-balance"
+          className="mt-9"
         >
-          One <span className="text-blue-600 dark:text-blue-400">Emergency Visit</span> Could Cost{' '}
-          <span className="text-blue-600 dark:text-blue-400">Thousands</span>
-        </motion.h1>
+          <h1
+            className={`${quicksand.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
+          >
+            <span className="block md:whitespace-nowrap">
+              One{" "}
+              <motion.span
+                style={{ color: '#2f65ff' }}
+                animate={{
+                  textShadow: [
+                    '0 0 4px rgba(47,101,255,0.25), 0 0 12px rgba(47,101,255,0.12)',
+                    '0 0 16px rgba(47,101,255,0.85), 0 0 40px rgba(47,101,255,0.55)',
+                    '0 0 4px rgba(47,101,255,0.25), 0 0 12px rgba(47,101,255,0.12)',
+                  ],
+                }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                Emergency...
+              </motion.span>
+            </span>
+            <span className="block md:whitespace-nowrap">
+              Could Cost{" "}
+              <motion.span
+                style={{ color: '#1e64ff' }}
+                animate={{
+                  textShadow: [
+                    '0 0 4px rgba(30,100,255,0.25), 0 0 12px rgba(30,100,255,0.12)',
+                    '0 0 16px rgba(30,100,255,0.85), 0 0 40px rgba(30,100,255,0.55)',
+                    '0 0 4px rgba(30,100,255,0.25), 0 0 12px rgba(30,100,255,0.12)',
+                  ],
+                }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.6 }}
+              >
+                Thousands
+              </motion.span>
+            </span>
+          </h1>
+        </motion.div>
 
         {/* Subheadline */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
+          className="mt-6 text-sm md:text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-pretty"
         >
-          Understand your options, and find the right coverage for your furry family member.
+          Don&apos;t wait for the costly vet bill. Cover your furry family member today!
         </motion.p>
 
         {/* CTA Buttons */}
@@ -39,52 +90,106 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <button
+            id="hero-start-saving"
             onClick={() => setQuoterOpen(true)}
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all hover:-translate-y-0.5 shadow-glow-blue hover:shadow-glow-blue-lg"
           >
-            Start Saving
+            Find Your Match
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
           <Link
             href="/providers"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
-            View Providers
+            Compare Providers
           </Link>
         </motion.div>
+      </div>
 
-        {/* Dog Image Looking Up */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="mt-12 flex justify-center"
+      {/* Blue lower panel: begins just above the pets. The white "cap" has a
+          gently upward-arching curved bottom edge and a soft downward shadow,
+          making the white area above look like a slightly raised tab. */}
+      <div data-paw-region="blue" className="relative overflow-hidden bg-blue-700 dark:bg-blue-800 pt-2 md:pt-4 pb-24 md:pb-0">
+        <svg
+          viewBox="0 0 1440 90"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="absolute top-0 left-0 w-full h-[60px] md:h-[90px] text-white dark:text-zinc-900 z-20"
+          style={{ filter: 'drop-shadow(0 9px 9px rgba(0,0,0,0.22))' }}
+        >
+          <path d="M0,0 L1440,0 L1440,72 C960,-12 480,-12 0,72 Z" fill="currentColor" />
+        </svg>
+
+        {/* Subtle radial blue glow behind the pets for depth. Kept low and high
+            so it never pools into blotchy color near the bottom fade. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              'radial-gradient(55% 55% at 50% 45%, rgba(96,165,250,0.28) 0%, rgba(37,99,235,0) 65%)',
+          }}
+        />
+
+        {/* Drifting background clouds — sit at z-0 so they float in the blue only,
+            behind the white top cap (z-20), the Vet Clinic line-art (z-[1]) and the
+            pets (z-10). */}
+        <HeroClouds />
+
+        {/* Pencil line-art pet scene (pet shop, cat tree, pets, houses) sitting on
+            the blue behind the pets. Inverted + screen blend turns the dark sketch
+            lines into soft white outlines and drops the white paper background out
+            entirely, so it blends seamlessly into the blue. Anchored to the bottom
+            and faded upward so the tops of the buildings dissolve into the panel. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-10 md:bottom-0 z-[1] flex justify-center"
         >
           <Image
-            src="/images/dog-looking-up.png?v=2"
-            alt="Dog looking up"
-            width={280}
-            height={280}
-            className="w-[220px] md:w-[280px] h-auto"
+            src="/images/pet-scene-lineart.png"
+            alt=""
+            width={1520}
+            height={1000}
+            className="w-full h-auto select-none"
+            style={{
+              filter: 'invert(1) brightness(2.4) contrast(1.3)',
+              mixBlendMode: 'screen',
+              opacity: 0.45,
+              WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
+              maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
+            }}
+          />
+        </div>
+
+        {/* Full-width pets image, raised so the animals fill most of the panel on
+            landing. The background is already transparent so they sit directly on
+            the blue; the bottom edge fades cleanly so it meets the ambient light
+            bar below without any harsh image cut. No drop-shadow here — it created
+            broken halo artifacts along the faded fur edge. */}
+        <div
+          id="hero-dog"
+          className="relative z-10 w-full"
+        >
+          <Image
+            src="/images/pets-hero.png"
+            alt="A group of pets — dogs, cats, a rabbit, a hamster and ferrets — all looking upward"
+            width={1914}
+            height={822}
+            className="w-full h-auto select-none"
             priority
           />
-        </motion.div>
 
-        {/* Badge - Now below the dog */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-6"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-100 dark:border-blue-800">
-            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-            Trusted by 10,000+ Pet Owners
-          </span>
-        </motion.div>
+          {/* Soft depth shadow at the pets' base (stays within the blue family so it
+              never reads as black): darkens the lower edge so the animals read as
+              tucked BEHIND the raised Pricing shelf that overlaps them below. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent via-blue-800/25 to-blue-900/45"
+          />
+        </div>
       </div>
 
       <PetInsuranceModal isOpen={quoterOpen} onClose={() => setQuoterOpen(false)} />

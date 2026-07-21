@@ -1,95 +1,171 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { footerLinks } from '@/components/footer'
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  // When the hero "Start Saving" button scrolls out of view, the header CTA
+  // morphs from "Contact Us" into "Start Saving" (and back when it returns).
+  const [showStartSaving, setShowStartSaving] = useState(false)
 
   const handleNavClick = () => {
-    setMobileMenuOpen(false)
+    setMenuOpen(false)
   }
 
-  const navigation = [
-    { name: 'Pet Insurance', href: '/providers' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Learn More', href: '#learn-more' },
+  useEffect(() => {
+    const target = document.getElementById('hero-start-saving')
+    if (!target) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStartSaving(!entry.isIntersecting),
+      { rootMargin: '-72px 0px 0px 0px', threshold: 0 },
+    )
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [])
+
+  // The hamburger menu surfaces every footer link, grouped into sections.
+  const menuGroups = [
+    { title: 'Resources', links: footerLinks.resources },
+    { title: 'Company', links: footerLinks.company },
+    { title: 'Trust', links: footerLinks.trust },
+    { title: 'Legal', links: footerLinks.legal },
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/images/logo-cropped.png"
-              alt="Pet Keepings"
-              width={180}
-              height={45}
-              className="w-[180px] h-auto dark:invert"
-              priority
-            />
-          </Link>
+    <header
+      className="fixed top-0 left-0 right-0 z-50 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/30 dark:border-white/10 shadow-sm shadow-black/5"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-3 items-center h-20">
+          {/* Hamburger Menu (left) */}
+          <div className="flex justify-start">
+            <button
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+              className="inline-flex items-center justify-center p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={menuOpen ? 'close' : 'open'}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="inline-flex"
+                >
+                  {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </motion.span>
+              </AnimatePresence>
+            </button>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-10">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={handleNavClick}
-                className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+          {/* Logo (center) */}
+          <div className="flex justify-center">
+            <Link href="/" className="flex items-center" onClick={handleNavClick}>
+              <Image
+                src="/images/logo-trimmed.png"
+                alt="Pet Keepings"
+                width={681}
+                height={168}
+                className="h-7 sm:h-8 w-auto dark:invert"
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* CTA Button (right) - morphs between Contact Us and Start Saving */}
+          <div className="flex justify-end">
+            {showStartSaving ? (
+              <button
+                key="start-saving"
+                onClick={() => window.dispatchEvent(new Event('open-quoter'))}
+                className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
               >
-                {item.name}
+                <motion.span
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="inline-flex items-center gap-1.5"
+                >
+                  {/* Compact "GO" on mobile so the CTA never overlaps the logo */}
+                  <span className="sm:hidden">GO</span>
+                  <span className="hidden sm:inline">Find Your Match</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                </motion.span>
+              </button>
+            ) : (
+              <Link
+                key="contact-us"
+                href="/contact"
+                className="group inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-xs leading-none sm:px-5 sm:py-2.5 sm:text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-glow-blue hover:shadow-glow-blue-lg"
+              >
+                <motion.span
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="inline-flex items-center gap-1.5"
+                >
+                  Contact Us
+                </motion.span>
               </Link>
-            ))}
-          </nav>
-
-          {/* CTA Button */}
-          <Link
-            href="/contact"
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
-          >
-            Contact Us
-          </Link>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            )}
+          </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-zinc-100 dark:border-zinc-800">
-            <nav className="flex flex-col gap-4">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={handleNavClick}
-                  className="text-base font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                onClick={handleNavClick}
-                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 mt-2"
-              >
-                Contact Us
-              </Link>
-            </nav>
-          </div>
-        )}
+        {/* Dropdown Menu */}
+        <AnimatePresence initial={false}>
+          {menuOpen && (
+            <motion.div
+              key="menu"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden -mx-6"
+            >
+              <div className="px-6 py-5 border-t border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-2xl backdrop-saturate-150">
+                <nav className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+                  {menuGroups.map((group, gi) => (
+                    <motion.div
+                      key={group.title}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{
+                        duration: 0.25,
+                        ease: 'easeOut',
+                        delay: menuOpen ? 0.08 + gi * 0.05 : 0,
+                      }}
+                    >
+                      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                        {group.title}
+                      </h3>
+                      <div className="flex flex-col gap-0.5">
+                        {group.links.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            onClick={handleNavClick}
+                            className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </nav>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )

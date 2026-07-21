@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
-import type { Metadata } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Inter, Space_Grotesk, Outfit } from 'next/font/google'
 import './globals.css'
 import { SettingsProvider } from '@/lib/settings-context'
 import { ThemeProvider } from '@/lib/theme-context'
@@ -13,6 +13,12 @@ const inter = Inter({
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const outfit = Outfit({
+  variable: '--font-outfit',
   subsets: ['latin'],
   display: 'swap',
 })
@@ -39,13 +45,32 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable} ${outfit.variable} bg-background`}>
+      <head>
+        <meta name="impact-site-verification" value="95c87286-baec-4dfa-ae89-cf284a79b4f4" />
+        {/* Apply the theme before paint to avoid a flash. Defaults to dark on first
+            visit (no stored preference) for all devices. A plain inline script runs
+            synchronously in <head> before the body paints (next/script's
+            beforeInteractive is not reliable for this in the App Router). */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}}catch(e){document.documentElement.classList.add('dark')}})();`,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
         <ThemeProvider>
           <SettingsProvider>

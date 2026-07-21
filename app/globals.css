@@ -96,6 +96,60 @@
   }
 }
 
+/* Auto-scrolling reviews marquee. Registered as a Tailwind v4 theme animation so
+   the keyframes are reliably emitted (raw top-level @keyframes get tree-shaken).
+   The `animate-marquee` utility is generated from this; pair it with
+   `motion-reduce:animate-none` in markup for reduced-motion users. */
+@theme {
+  --animate-marquee: marquee 60s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* Move exactly half the track (one full copy of the list) for a seamless loop */
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* Lemonade-style soft glow + layered drop shadows */
+@layer utilities {
+  /* Soft, symmetric ambient glow around primary CTAs. Uses an even spread on all
+     sides (no strong downward offset) so the halo never looks clipped against
+     neighbouring sections. */
+  .shadow-glow-blue {
+    box-shadow:
+      0 2px 8px -1px rgba(37, 99, 235, 0.4),
+      0 0 22px 2px rgba(59, 130, 246, 0.45);
+  }
+  .shadow-glow-blue-lg {
+    box-shadow:
+      0 4px 12px -1px rgba(37, 99, 235, 0.45),
+      0 0 38px 8px rgba(59, 130, 246, 0.55);
+  }
+
+  /* Soft, slightly diffuse card shadow (no harsh edges) */
+  .shadow-soft {
+    box-shadow:
+      0 1px 2px rgba(8, 15, 40, 0.04),
+      0 8px 24px -8px rgba(8, 15, 40, 0.12),
+      0 16px 48px -16px rgba(8, 15, 40, 0.1);
+  }
+  .shadow-soft-lg {
+    box-shadow:
+      0 2px 4px rgba(8, 15, 40, 0.05),
+      0 14px 36px -10px rgba(8, 15, 40, 0.16),
+      0 28px 64px -20px rgba(8, 15, 40, 0.14);
+  }
+
+  /* Blurred decorative glow blob */
+  .blob-blur {
+    filter: blur(64px);
+  }
+}
+
 /* Smooth scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

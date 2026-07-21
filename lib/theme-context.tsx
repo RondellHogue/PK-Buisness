@@ -19,7 +19,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setTheme(stored)
       document.documentElement.classList.toggle('dark', stored === 'dark')
+      return
     }
+    // No saved preference: default to dark mode on first visit for all devices
+    // (mobile and desktop).
+    setTheme('dark')
+    document.documentElement.classList.toggle('dark', true)
   }, [])
 
   const toggleTheme = () => {
