@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight, MoreHorizontal, BarChart3 } from 'lucide-react'
+import { X, Dog, Cat, Bird, Rabbit, Fish, Turtle, Worm, Squirrel, Rat, ChevronRight, Loader2, Star, ArrowUpRight, MoreHorizontal, BarChart3, ShieldCheck, PawPrint } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -176,11 +176,11 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
       setPhraseIndex((i) => (i + 1) % punnyPhrases.length)
     }, 1000)
     timers.current.push(interval as unknown as ReturnType<typeof setTimeout>)
-    // Total load time: 4 seconds
+    // Total load time: 2.9 seconds
     const done = setTimeout(() => {
       clearInterval(interval)
       setLoading(false)
-    }, 4000)
+    }, 2900)
     timers.current.push(done)
   }
 
@@ -230,23 +230,50 @@ export function PetInsuranceModal({ isOpen, onClose }: PetInsuranceModalProps) {
           className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800">
-            <div>
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Find Your Coverage</h2>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">Step {step} of 5</p>
+          {/* Header — themed blue banner with a protection badge */}
+          <div className="relative flex items-center justify-between gap-4 overflow-hidden bg-gradient-to-br from-blue-600 to-blue-500 p-6 text-white">
+            {/* Decorative watermark paw for a warm, on-theme feel */}
+            <PawPrint
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-3 -top-4 h-28 w-28 rotate-12 text-white/10"
+            />
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-sm">
+                <ShieldCheck className="h-6 w-6 text-white" />
+              </span>
+              <div>
+                <h2 className="text-xl font-semibold leading-tight">Find Your Coverage</h2>
+                <p className="text-sm text-blue-100">Personalized pet protection in a few taps</p>
+              </div>
             </div>
-            <button onClick={handleClose} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
-              <X className="w-5 h-5 text-zinc-500" />
+            <button
+              onClick={handleClose}
+              className="relative z-10 rounded-full p-2 transition hover:bg-white/15"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5 text-white" />
             </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="h-1 bg-zinc-100 dark:bg-zinc-800">
-            <div 
-              className="h-full bg-blue-600 transition-all duration-300"
-              style={{ width: `${(step / 5) * 100}%` }}
-            />
+          {/* Step indicator — segmented dots read cleaner than a raw progress bar */}
+          <div className="flex items-center justify-between gap-3 border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
+            <span className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+              Step {step} of 5
+            </span>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <span
+                  key={s}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    s === step
+                      ? 'w-6 bg-blue-600'
+                      : s < step
+                        ? 'w-1.5 bg-blue-600'
+                        : 'w-1.5 bg-zinc-200 dark:bg-zinc-700'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Content */}

@@ -18,11 +18,11 @@ type CloudConfig = {
 // Distinct clouds with varied art, size, opacity and speed. Even horizontal spacing
 // is computed at runtime from the container width; vertical positions are staggered.
 const CLOUDS: CloudConfig[] = [
-  { src: '/images/cloud-2.png', topPct: 9, width: 190, opacity: 0.5, speed: 10 },
-  { src: '/images/cloud-1.png', topPct: 16, width: 120, opacity: 0.3, speed: 7 },
-  { src: '/images/cloud-1.png', topPct: 7, width: 150, opacity: 0.42, speed: 8.5 },
-  { src: '/images/cloud-2.png', topPct: 19, width: 95, opacity: 0.24, speed: 6 },
-  { src: '/images/cloud-1.png', topPct: 12, width: 168, opacity: 0.44, speed: 9 },
+  { src: '/images/cloud-2.png', topPct: 9, width: 190, opacity: 0.5, speed: 18 },
+  { src: '/images/cloud-1.png', topPct: 16, width: 120, opacity: 0.3, speed: 13 },
+  { src: '/images/cloud-1.png', topPct: 7, width: 150, opacity: 0.42, speed: 15 },
+  { src: '/images/cloud-2.png', topPct: 19, width: 95, opacity: 0.24, speed: 11 },
+  { src: '/images/cloud-1.png', topPct: 12, width: 168, opacity: 0.44, speed: 16 },
 ]
 
 export function HeroClouds() {
