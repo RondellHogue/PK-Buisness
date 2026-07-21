@@ -37,21 +37,42 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-9"
         >
-          <motion.h1
-            animate={{ scale: [1, 1.035, 1] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ transformOrigin: 'center' }}
+          <h1
             className={`${baloo.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
           >
             <span className="block md:whitespace-nowrap">
               One{" "}
-              <span style={{ color: '#2f65ff' }}>Emergency...</span>
+              <motion.span
+                style={{ color: '#2f65ff' }}
+                animate={{
+                  textShadow: [
+                    '0 0 4px rgba(47,101,255,0.25), 0 0 12px rgba(47,101,255,0.12)',
+                    '0 0 16px rgba(47,101,255,0.85), 0 0 40px rgba(47,101,255,0.55)',
+                    '0 0 4px rgba(47,101,255,0.25), 0 0 12px rgba(47,101,255,0.12)',
+                  ],
+                }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                Emergency...
+              </motion.span>
             </span>
             <span className="block md:whitespace-nowrap">
               Could Cost{" "}
-              <span style={{ color: '#1e64ff' }}>Thousands</span>
+              <motion.span
+                style={{ color: '#1e64ff' }}
+                animate={{
+                  textShadow: [
+                    '0 0 4px rgba(30,100,255,0.25), 0 0 12px rgba(30,100,255,0.12)',
+                    '0 0 16px rgba(30,100,255,0.85), 0 0 40px rgba(30,100,255,0.55)',
+                    '0 0 4px rgba(30,100,255,0.25), 0 0 12px rgba(30,100,255,0.12)',
+                  ],
+                }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.6 }}
+              >
+                Thousands
+              </motion.span>
             </span>
-          </motion.h1>
+          </h1>
         </motion.div>
 
         {/* Subheadline */}
