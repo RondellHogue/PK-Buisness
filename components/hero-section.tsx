@@ -30,7 +30,7 @@ export function HeroSection() {
       {/* Top white area with headline, subtext and CTAs */}
       <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-10">
         {/* Headline — two forced lines, bold-yet-playful Baloo 2, with a subtle
-            constant float to give the hero life. */}
+            constant "breathing" pulse to give the hero life. */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -38,8 +38,9 @@ export function HeroSection() {
           className="mt-9"
         >
           <motion.h1
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ scale: [1, 1.035, 1] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ transformOrigin: 'center' }}
             className={`${baloo.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
           >
             <span className="block md:whitespace-nowrap">
