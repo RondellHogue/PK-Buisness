@@ -227,12 +227,22 @@ function NumberSlider({
     }
     draggingRef.current = true
     setDragging(true)
-    setDragPos(valFromClientX(e.clientX))
+    const p = valFromClientX(e.clientX)
+    setDragPos(p)
+    // Report the live rounded value immediately so any external display
+    // (e.g. the blue count badge) reflects the knob position while dragging.
+    const rounded = Math.round(p)
+    if (rounded !== value) onChange(rounded)
   }
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!draggingRef.current) return
-    setDragPos(valFromClientX(e.clientX))
+    const p = valFromClientX(e.clientX)
+    setDragPos(p)
+    // Emit the live rounded value on every move; the knob itself keeps following
+    // the finger continuously via dragPos, so it still feels free-flowing.
+    const rounded = Math.round(p)
+    if (rounded !== value) onChange(rounded)
   }
 
   const endDrag = (e: React.PointerEvent) => {
