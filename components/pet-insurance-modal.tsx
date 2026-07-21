@@ -43,7 +43,9 @@ const budgetOptions = [
   { label: 'Flexible', detail: 'I want the best plan' },
 ]
 
-// Reusable slider used for the age and budget questions
+// Reusable slider used for the age and budget questions.
+// Custom pointer-driven track: the knob follows the finger freely while dragging
+// (continuous, no mid-drag snapping) and snaps to the nearest option on release.
 function QuizSlider({
   options,
   value,
@@ -53,9 +55,72 @@ function QuizSlider({
   value: number
   onChange: (index: number) => void
 }) {
-  const current = options[value]
-  // Percentage of the track that is "filled" up to the selected value
-  const pct = options.length > 1 ? (value / (options.length - 1)) * 100 : 0
+  const maxIndex = options.length - 1
+  const trackRef = useRef<HTMLDivElement>(null)
+  // Ref mirrors the dragging flag so pointermove always sees the current value
+  // regardless of React's state-flush timing.
+  const draggingRef = useRef(false)
+  const [dragging, setDragging] = useState(false)
+  // Continuous position (0..maxIndex) used only while dragging; otherwise we
+  // derive position from the committed `value`.
+  const [dragPos, setDragPos] = useState<number | null>(null)
+
+  const pos = dragging && dragPos !== null ? dragPos : value
+  const pct = maxIndex > 0 ? (pos / maxIndex) * 100 : 0
+  // The option shown/highlighted is always the nearest one to the knob.
+  const activeIndex = Math.round(pos)
+  const current = options[activeIndex]
+
+  const posFromClientX = (clientX: number) => {
+    const el = trackRef.current
+    if (!el) return 0
+    const rect = el.getBoundingClientRect()
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    const clamped = Math.min(1, Math.max(0, ratio))
+    return clamped * maxIndex
+  }
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      /* capture is best-effort; dragging still works without it */
+    }
+    draggingRef.current = true
+    setDragging(true)
+    setDragPos(posFromClientX(e.clientX))
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    setDragPos(posFromClientX(e.clientX))
+  }
+
+  const endDrag = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    } catch {
+      /* pointer may already be released */
+    }
+    // Snap to the nearest option on release.
+    const snapped = dragPos !== null ? Math.round(posFromClientX(e.clientX)) : value
+    draggingRef.current = false
+    setDragging(false)
+    setDragPos(null)
+    if (snapped !== value) onChange(snapped)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      onChange(Math.max(0, value - 1))
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      onChange(Math.min(maxIndex, value + 1))
+    }
+  }
+
   return (
     <div className="mt-4">
       <div className="mb-8 text-center">
@@ -64,17 +129,44 @@ function QuizSlider({
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{current.range ?? current.detail}</p>
         )}
       </div>
-      <input
-        type="range"
-        min={0}
-        max={options.length - 1}
-        step={1}
-        value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full accent-blue-600"
-        style={{ background: `linear-gradient(to right, #2563eb ${pct}%, #d4d4d8 ${pct}%)` }}
+
+      {/* Large touch surface (py-4 = ~64px tall hit area) so the knob is easy to grab */}
+      <div
+        role="slider"
+        tabIndex={0}
+        aria-valuemin={0}
+        aria-valuemax={maxIndex}
+        aria-valuenow={activeIndex}
+        aria-valuetext={current.label}
         aria-label="Select an option"
-      />
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onKeyDown={handleKeyDown}
+        className="relative flex cursor-pointer touch-none select-none items-center py-4 outline-none"
+      >
+        {/* Base track */}
+        <div ref={trackRef} className="relative h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+          {/* Filled portion */}
+          <div
+            className={`absolute inset-y-0 left-0 rounded-full bg-blue-600 ${
+              dragging ? '' : 'transition-[width] duration-200 ease-out'
+            }`}
+            style={{ width: `${pct}%` }}
+          />
+          {/* Knob — visually 24px, with a larger invisible tap ring around it */}
+          <div
+            className={`absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-600 bg-white shadow-md dark:bg-zinc-900 ${
+              dragging ? 'scale-110' : 'transition-all duration-200 ease-out'
+            }`}
+            style={{ left: `${pct}%` }}
+          >
+            <span className="absolute -inset-3 rounded-full" aria-hidden="true" />
+          </div>
+        </div>
+      </div>
+
       <div className="mt-3 flex justify-between">
         {options.map((o, i) => (
           <button
@@ -82,7 +174,7 @@ function QuizSlider({
             type="button"
             onClick={() => onChange(i)}
             className={`text-xs font-medium transition-colors ${
-              i === value ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
+              i === activeIndex ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
             }`}
           >
             {o.label}
