@@ -7,11 +7,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
 import { HeroClouds } from './hero-clouds'
-import { Outfit } from 'next/font/google'
+import { Baloo_2 } from 'next/font/google'
 
-const outfit = Outfit({
+const baloo = Baloo_2({
   subsets: ['latin'],
   display: 'swap',
+  weight: ['600', '700', '800'],
 })
 
 export function HeroSection() {
@@ -28,27 +29,29 @@ export function HeroSection() {
     <section className="relative pt-24 md:pt-28 bg-transparent">
       {/* Top white area with headline, subtext and CTAs */}
       <div className="max-w-4xl mx-auto px-6 text-center pb-8 md:pb-10">
-        {/* Headline */}
-       <motion.h1
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, delay: 0.1 }}
-  className={`${outfit.className} mt-9 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-zinc-900 dark:text-white md:text-balance`}
->
-  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '36px' }}>
-    One{" "}
-    <span className="font-extrabold" style={{ color: '#2f65ff' }}>
-      Emergency...
-    </span>
-  </span>{" "}
-  <br className="md:hidden" />
-  <span className="whitespace-nowrap md:whitespace-normal" style={{ fontSize: '36px' }}>
-    Could Cost{" "}
-    <span className="font-extrabold" style={{ color: '#1e64ff' }}>
-      Thousands
-    </span>
-  </span>
-</motion.h1>
+        {/* Headline — two forced lines, bold-yet-playful Baloo 2, with a subtle
+            constant float to give the hero life. */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-9"
+        >
+          <motion.h1
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            className={`${baloo.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
+          >
+            <span className="block md:whitespace-nowrap">
+              One{" "}
+              <span style={{ color: '#2f65ff' }}>Emergency...</span>
+            </span>
+            <span className="block md:whitespace-nowrap">
+              Could Cost{" "}
+              <span style={{ color: '#1e64ff' }}>Thousands</span>
+            </span>
+          </motion.h1>
+        </motion.div>
 
         {/* Subheadline */}
         <motion.p
