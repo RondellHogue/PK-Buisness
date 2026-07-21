@@ -7,12 +7,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PetInsuranceModal } from './pet-insurance-modal'
 import { HeroClouds } from './hero-clouds'
-import { Baloo_2 } from 'next/font/google'
+import { Quicksand } from 'next/font/google'
 
-const baloo = Baloo_2({
+const quicksand = Quicksand({
   subsets: ['latin'],
   display: 'swap',
-  weight: ['600', '700', '800'],
+  weight: ['500', '600', '700'],
 })
 
 export function HeroSection() {
@@ -38,7 +38,7 @@ export function HeroSection() {
           className="mt-9"
         >
           <h1
-            className={`${baloo.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
+            className={`${quicksand.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-zinc-900 dark:text-white`}
           >
             <span className="block md:whitespace-nowrap">
               One{" "}
